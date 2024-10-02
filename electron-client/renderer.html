@@ -7,6 +7,7 @@
     <style>
         body {
             margin: 0;
+            padding: 0;
             overflow: hidden;
         }
         #flashOverlay {
@@ -19,6 +20,7 @@
             opacity: 0;
             visibility: hidden;
             transition: opacity 0.5s ease, visibility 0s 0.5s;
+            z-index: 9999; /* Ensures the flash overlay is on top of everything */
         }
         #flashOverlay.show {
             visibility: visible;
@@ -33,7 +35,7 @@
     <script>
         const { ipcRenderer } = require('electron');
 
-        // Listen for "flash" event from main process
+        // Listen for "flash" event from the main process
         ipcRenderer.on('flash', () => {
             const flashOverlay = document.getElementById('flashOverlay');
             flashOverlay.classList.add('show');  // Show the overlay
