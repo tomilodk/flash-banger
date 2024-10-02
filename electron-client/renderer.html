@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flash Effect</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+        #flashOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: white;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease, visibility 0s 0.5s;
+        }
+        #flashOverlay.show {
+            visibility: visible;
+            opacity: 1;
+            transition: opacity 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+    <div id="flashOverlay"></div>
+
+    <script>
+        const { ipcRenderer } = require('electron');
+
+        // Listen for "flash" event from main process
+        ipcRenderer.on('flash', () => {
+            const flashOverlay = document.getElementById('flashOverlay');
+            flashOverlay.classList.add('show');  // Show the overlay
+            setTimeout(() => {
+                flashOverlay.classList.remove('show');  // Hide the overlay after 1 second
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
