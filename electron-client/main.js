@@ -1,47 +1,50 @@
-// Import required modules
+// Import Electron modules
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const WebSocket = require('ws');
 
-// Create a new browser window for the app
 let mainWindow;
 
 function createWindow() {
+    // Create a transparent, fullscreen, frameless window
     mainWindow = new BrowserWindow({
         width: 800,
         height: 600,
+        fullscreen: true,          // Make it full-screen
+        transparent: true,         // Transparent window
+        frame: false,              // No window frame (borderless)
+        alwaysOnTop: true,         // Ensure it stays on top
+        skipTaskbar: true,         // Don't show it in the taskbar
         webPreferences: {
-            nodeIntegration: true,  // Enable Node.js integration in the renderer
-            contextIsolation: false
-        },
-        fullscreen: true,
-        frame: false, // No window frame (for a full-screen flash effect)
+            nodeIntegration: true,  // Allow using Node.js modules in the renderer
+            contextIsolation: false,
+        }
     });
 
-    // Load the renderer.html file
+    // Load the renderer (the frontend, where the overlay and flash happen)
     mainWindow.loadFile('renderer.html');
 }
 
-// Set up the WebSocket client
+// Set up WebSocket (or HTTP) to listen for flash commands
 function setupWebSocket() {
-    const ws = new WebSocket('ws://localhost:8080/ws');  // Connect to Go WebSocket server
+    const ws = new WebSocket('ws://localhost:8080/ws');  // Replace with your WebSocket server address
 
-    ws.on('open', function open() {
-        console.log('WebSocket connection established.');
+    ws.on('open', () => {
+        console.log('WebSocket connection established');
     });
 
-    ws.on('message', function incoming(data) {
-        // Convert Buffer to string
+    ws.on('message', (data) => {
         const message = data.toString();
-        console.log('Received message from server:', message);
+        console.log('Received message:', message);
 
+        // Trigger the flash in the renderer process
         if (message === 'flash') {
-            mainWindow.webContents.send('flash');  // Send flash event to renderer
+            mainWindow.webContents.send('flash');
         }
     });
 
     ws.on('close', () => {
-        console.log('WebSocket connection closed.');
+        console.log('WebSocket connection closed');
     });
 
     ws.on('error', (error) => {
@@ -49,17 +52,16 @@ function setupWebSocket() {
     });
 }
 
-// When Electron is ready, create the window and set up WebSocket
+// Electron app lifecycle
 app.whenReady().then(() => {
     createWindow();
     setupWebSocket();
 
-    app.on('activate', function () {
+    app.on('activate', () => {
         if (BrowserWindow.getAllWindows().length === 0) createWindow();
     });
 });
 
-// Quit app when all windows are closed (for macOS compatibility)
-app.on('window-all-closed', function () {
+app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') app.quit();
 });

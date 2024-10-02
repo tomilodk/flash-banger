@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flash Effect</title>
+    <title>Flash Overlay</title>
     <style>
         body {
             margin: 0;
             padding: 0;
             overflow: hidden;
+            background-color: transparent;
         }
         #flashOverlay {
             position: fixed;
@@ -20,7 +21,7 @@
             opacity: 0;
             visibility: hidden;
             transition: opacity 0.5s ease, visibility 0s 0.5s;
-            z-index: 9999; /* Ensures the flash overlay is on top of everything */
+            z-index: 9999;
         }
         #flashOverlay.show {
             visibility: visible;
@@ -30,17 +31,18 @@
     </style>
 </head>
 <body>
+    <!-- This is the fullscreen overlay that flashes white -->
     <div id="flashOverlay"></div>
 
     <script>
         const { ipcRenderer } = require('electron');
 
-        // Listen for "flash" event from the main process
+        // Listen for 'flash' event from the main process
         ipcRenderer.on('flash', () => {
             const flashOverlay = document.getElementById('flashOverlay');
-            flashOverlay.classList.add('show');  // Show the overlay
+            flashOverlay.classList.add('show');  // Show the flash
             setTimeout(() => {
-                flashOverlay.classList.remove('show');  // Hide the overlay after 1 second
+                flashOverlay.classList.remove('show');  // Hide the flash after 1 second
             }, 1000);
         });
     </script>
