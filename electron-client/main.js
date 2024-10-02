@@ -29,7 +29,7 @@ function createWindow() {
 
 // Set up WebSocket (or HTTP) to listen for flash commands
 function setupWebSocket() {
-    const ws = new WebSocket('ws://localhost:8080/ws');  // Replace with your WebSocket server address
+    const ws = new WebSocket('ws://flash.igloo.dk/ws');  // Replace with your WebSocket server address
 
     ws.on('open', () => {
         console.log('WebSocket connection established');
