@@ -28,19 +28,37 @@
             opacity: 1;
             transition: opacity 0.5s ease;
         }
+
+        #flashText {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-weight: bold;
+            text-align: center;
+            font-size: 10vw;
+            width: 50%;
+            height: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
     </style>
 </head>
 <body>
     <!-- This is the fullscreen overlay that flashes white -->
-    <div id="flashOverlay"></div>
+    <div id="flashOverlay">
+        <p id="flashText"></p>
+    </div>
 
     <script>
         const { ipcRenderer } = require('electron');
 
         // Listen for 'flash' event from the main process
-        ipcRenderer.on('flash', () => {
+        ipcRenderer.on('flash', (event, data) => {
             const flashOverlay = document.getElementById('flashOverlay');
             flashOverlay.classList.add('show');  // Show the flash
+            document.getElementById('flashText').textContent = data.text;
             setTimeout(() => {
                 flashOverlay.classList.remove('show');  // Hide the flash after 1 second
             }, 1000);

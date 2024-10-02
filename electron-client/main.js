@@ -7,8 +7,8 @@ let mainWindow;
 function createWindow() {
     // Create a transparent, fullscreen, frameless window
     mainWindow = new BrowserWindow({
-        width: 800,
-        height: 600,
+        width: 1920,
+        height: 1080,
         fullscreen: false,          // Make it fullscreen
         transparent: true,         // Transparent window
         frame: false,              // No window frame (borderless)
@@ -39,10 +39,17 @@ function setupWebSocket() {
         const message = data.toString();
         console.log('Received message:', message);
 
-        // Trigger the flash in the renderer process
-        if (message === 'flash') {
-            mainWindow.webContents.send('flash');
+        try {
+            const messageObject = JSON.parse(message);
+
+            // Trigger the flash in the renderer process
+            if (messageObject.command === 'flash') {
+                mainWindow.webContents.send('flash', { text: messageObject.body });
+            }
+        } catch {
         }
+
+
     });
 
     ws.on('close', () => {

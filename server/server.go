@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"log"
 	"math/rand"
 	"net/http"
@@ -86,6 +87,22 @@ func triggerFlash(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	var requestBody struct {
+		Text string `json:"text"`
+	}
+	decoder := json.NewDecoder(r.Body)
+	if err := decoder.Decode(&requestBody); err != nil {
+		http.Error(w, "Invalid JSON body", http.StatusBadRequest)
+		return
+	}
+
+	text := requestBody.Text
+
+	if text == "" {
+		http.Error(w, "Missing text", http.StatusBadRequest)
+		return
+	}
+
 	clientsMutex.Lock()
 	client, exists := clients[clientID]
 	clientsMutex.Unlock()
@@ -96,7 +113,18 @@ func triggerFlash(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Send the flash message to the client
-	err := client.Conn.WriteMessage(websocket.TextMessage, []byte("flash"))
+	message := map[string]string{
+		"command": "flash",
+		"body":    text,
+	}
+	jsonMessage, err := json.Marshal(message)
+	
+	if err != nil {
+		log.Printf("Error marshaling JSON: %v", err)
+		http.Error(w, "Failed to create flash message", http.StatusInternalServerError)
+		return
+	}
+	err = client.Conn.WriteMessage(websocket.TextMessage, jsonMessage)
 	if err != nil {
 		log.Printf("Error sending flash to client %s: %v", clientID, err)
 		http.Error(w, "Failed to trigger flash", http.StatusInternalServerError)
