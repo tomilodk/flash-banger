@@ -1,4 +1,3 @@
-// Import Electron modules
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const WebSocket = require('ws');
@@ -10,7 +9,7 @@ function createWindow() {
     mainWindow = new BrowserWindow({
         width: 800,
         height: 600,
-        fullscreen: true,          // Make it full-screen
+        fullscreen: false,          // Make it fullscreen
         transparent: true,         // Transparent window
         frame: false,              // No window frame (borderless)
         alwaysOnTop: true,         // Ensure it stays on top
@@ -20,6 +19,9 @@ function createWindow() {
             contextIsolation: false,
         }
     });
+
+    // Enable click-through: allows clicking through the window
+    mainWindow.setIgnoreMouseEvents(true, { forward: true });
 
     // Load the renderer (the frontend, where the overlay and flash happen)
     mainWindow.loadFile('renderer.html');
