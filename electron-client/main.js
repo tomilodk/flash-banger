@@ -13,7 +13,7 @@ function createWindow() {
         transparent: true,         // Transparent window
         frame: false,              // No window frame (borderless)
         alwaysOnTop: true,         // Ensure it stays on top
-        skipTaskbar: true,         // Don't show it in the taskbar
+        skipTaskbar: true,         // Don't show it in the taskbar (Windows/Linux)
         webPreferences: {
             nodeIntegration: true,  // Allow using Node.js modules in the renderer
             contextIsolation: false,
@@ -56,6 +56,11 @@ function setupWebSocket() {
 
 // Electron app lifecycle
 app.whenReady().then(() => {
+    // Hide the app icon from the dock (for macOS)
+    if (process.platform === 'darwin') {
+        app.dock.hide();
+    }
+
     createWindow();
     setupWebSocket();
 
