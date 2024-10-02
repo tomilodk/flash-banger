@@ -7,7 +7,7 @@ on:
     branches: [ "main" ]
 
 env:
-  DOCKER_HUB_REPO: your-dockerhub-username/your-repo-name
+  DOCKER_HUB_REPO: thefoggingduke/flash-banger
 
 jobs:
   build-and-push:
