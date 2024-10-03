@@ -1,0 +1,112 @@
+name: Build and Create Signed DMG Installer
+
+on:
+  push:
+    branches:
+      - pipeline
+  pull_request:
+    branches:
+      - pipeline
+
+jobs:
+  build:
+    env:
+        APP_NAME: FlashBanger
+        IMAGE_PATH: ./packaging/icon.png
+        BACKGROUND_IMAGE: ./packaging/background.png
+        ICON_OUTPUT_DIR: ./packaging/icon.iconset
+    runs-on: macos-latest
+    steps:
+    - name: Check out repository
+      uses: actions/checkout@v3
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Install ImageMagick
+      run: brew install imagemagick
+
+    - name: Create Iconset Directory
+      run: mkdir icon.iconset
+
+    - name: Convert Image to Multiple Resolutions
+      run: |
+        convert ${{ env.IMAGE_PATH }} -resize 16x16 ${{ env.ICON_OUTPUT_DIR }}/icon_16x16.png
+        convert ${{ env.IMAGE_PATH }} -resize 32x32 ${{ env.ICON_OUTPUT_DIR }}/icon_16x16@2x.png
+        convert ${{ env.IMAGE_PATH }} -resize 32x32 ${{ env.ICON_OUTPUT_DIR }}/icon_32x32.png
+        convert ${{ env.IMAGE_PATH }} -resize 64x64 ${{ env.ICON_OUTPUT_DIR }}/icon_32x32@2x.png
+        convert ${{ env.IMAGE_PATH }} -resize 128x128 ${{ env.ICON_OUTPUT_DIR }}/icon_128x128.png
+        convert ${{ env.IMAGE_PATH }} -resize 256x256 ${{ env.ICON_OUTPUT_DIR }}/icon_128x128@2x.png
+        convert ${{ env.IMAGE_PATH }} -resize 256x256 ${{ env.ICON_OUTPUT_DIR }}/icon_256x256.png
+        convert ${{ env.IMAGE_PATH }} -resize 512x512 ${{ env.ICON_OUTPUT_DIR }}/icon_256x256@2x.png
+        convert ${{ env.IMAGE_PATH }} -resize 512x512 ${{ env.ICON_OUTPUT_DIR }}/icon_512x512.png
+        convert ${{ env.IMAGE_PATH }} -resize 1024x1024 ${{ env.ICON_OUTPUT_DIR }}/icon_512x512@2x.png
+        
+
+    - name: Create ICNS file
+      run: iconutil -c icns ${{ env.ICON_OUTPUT_DIR }}
+
+    - name: Package Electron App
+      run: |
+        npx electron-packager . ${{ env.APP_NAME }} --platform=darwin --arch=x64 --icon=${{ env.ICON_OUTPUT_DIR }}/icon.icns --out=dist --overwrite
+
+    - name: Download Developer Certificate
+      run: |
+        echo "${{ secrets.APPLE_DEVELOPER_CERTIFICATE }}" | base64 --decode > certificate.p12
+
+    - name: Import Certificate into Keychain
+      run: |
+        security create-keychain -p password build.keychain
+        security import certificate.p12 -k build.keychain -P "${{ secrets.APPLE_CERTIFICATE_PASSWORD }}" -T /usr/bin/codesign
+        security list-keychains -d user -s build.keychain
+        security unlock-keychain -p password build.keychain
+        security set-keychain-settings
+
+    - name: Sign the Application
+      run: |
+        codesign --deep --force --verify --verbose --sign "Developer ID Application: ${{ secrets.APPLE_TEAM_ID }}" dist/${{ env.APP_NAME }}-darwin-x64/${{ env.APP_NAME }}.app
+
+    - name: Create DMG Installer with Custom Background
+      run: |
+        npm install -g create-dmg
+        create-dmg --volname "${{ env.APP_NAME }} Installer" \
+        --window-pos 200 120 \
+        --window-size 600 400 \
+        --icon-size 100 \
+        --icon "${{ env.APP_NAME }}.app" 175 120 \
+        --icon "Applications" 425 120 \
+        --background "${{ env.BACKGROUND_IMAGE }}" \
+        dist/${{ env.APP_NAME }}-darwin-x64/${{ env.APP_NAME }}.app \
+        dist/
+
+    - name: Zip the Application
+      run: |
+        ditto -c -k --sequesterRsrc --keepParent dist/${{ env.APP_NAME }}-darwin-x64/${{ env.APP_NAME }}.app dist/${{ env.APP_NAME }}.zip
+
+    - name: Notarize the Application
+      run: |
+        xcrun altool --notarize-app -f dist/${{ env.APP_NAME }}.zip --primary-bundle-id "com.yourcompany.yourapp" --username "${{ secrets.APPLE_ID }}" --password "${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}"
+    
+    - name: Wait for Notarization to Complete
+      run: |
+        echo "Waiting for notarization..."
+        sleep 300 # Adjust as needed for your app size.
+
+    - name: Staple Notarization to the App
+      run: |
+        xcrun stapler staple dist/${{ env.APP_NAME }}-darwin-x64/${{ env.APP_NAME }}.app
+
+    - name: Sign the DMG
+      run: |
+        codesign --sign "Developer ID Application: ${{ secrets.APPLE_TEAM_ID }}" dist/${{ env.APP_NAME }}.dmg
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ env.APP_NAME }}.dmg
+        path: dist/${{ env.APP_NAME }}.dmg
