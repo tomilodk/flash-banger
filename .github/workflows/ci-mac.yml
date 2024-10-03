@@ -13,6 +13,7 @@ jobs:
     env:
         APP_NAME: FlashBanger
         IMAGE_PATH: ./packaging/icon.png
+        BUNDLE_ID: com.mappso.flashbanger
         BACKGROUND_IMAGE: ./packaging/background.png
         ICON_OUTPUT_DIR: ./packaging/icon.iconset
     runs-on: macos-latest
@@ -24,6 +25,9 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: '18'
+
+    - name: Goto app directory
+      run: cd electron-client
 
     - name: Install dependencies
       run: npm install
@@ -90,7 +94,7 @@ jobs:
 
     - name: Notarize the Application
       run: |
-        xcrun altool --notarize-app -f dist/${{ env.APP_NAME }}.zip --primary-bundle-id "com.yourcompany.yourapp" --username "${{ secrets.APPLE_ID }}" --password "${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}"
+        xcrun altool --notarize-app -f dist/${{ env.APP_NAME }}.zip --primary-bundle-id "${{ env.BUNDLE_ID }}" --username "${{ secrets.APPLE_ID }}" --password "${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}"
     
     - name: Wait for Notarization to Complete
       run: |
