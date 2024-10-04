@@ -12,7 +12,7 @@ jobs:
   build:
     env:
         APP_NAME: FlashBanger
-        IMAGE_PATH: packaging/icon.png
+        IMAGE_PATH: packaging/app_icon.png
         BUNDLE_ID: com.mappso.flashbanger
         BACKGROUND_IMAGE: packaging/background.png
         ICON_OUTPUT_DIR: packaging/icon.iconset
