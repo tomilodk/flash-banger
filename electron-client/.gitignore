@@ -1,4 +1,5 @@
 node_modules
 dist
 out/
-packaging/iconset
+packaging/icon.iconset
+packaging/icon.icns

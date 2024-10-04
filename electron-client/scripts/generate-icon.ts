@@ -7,7 +7,7 @@ const execAsync = util.promisify(exec);
 
 (async function () {
   const imagePath = path.join(__dirname, "../packaging/app_icon.png");
-  const iconOutputDir = path.join(__dirname, "../packaging/iconset");
+  const iconOutputDir = path.join(__dirname, "../packaging/icon.iconset");
 
   await fs.promises.mkdir(iconOutputDir, { recursive: true });
 

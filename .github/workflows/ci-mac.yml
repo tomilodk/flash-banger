@@ -35,22 +35,10 @@ jobs:
     - name: Install ImageMagick
       run: brew install imagemagick
 
-    - name: Create Iconset Directory
-      run: mkdir -p ${{ env.ICON_OUTPUT_DIR }}
-
-    - name: Convert Image to Multiple Resolutions
+    - name: Generate Iconset
       run: |
-        ls -la
-        magick ${{ env.IMAGE_PATH }} -resize 16x16 ${{ env.ICON_OUTPUT_DIR }}/icon_16x16.png
-        magick ${{ env.IMAGE_PATH }} -resize 32x32 ${{ env.ICON_OUTPUT_DIR }}/icon_16x16@2x.png
-        magick ${{ env.IMAGE_PATH }} -resize 32x32 ${{ env.ICON_OUTPUT_DIR }}/icon_32x32.png
-        magick ${{ env.IMAGE_PATH }} -resize 64x64 ${{ env.ICON_OUTPUT_DIR }}/icon_32x32@2x.png
-        magick ${{ env.IMAGE_PATH }} -resize 128x128 ${{ env.ICON_OUTPUT_DIR }}/icon_128x128.png
-        magick ${{ env.IMAGE_PATH }} -resize 256x256 ${{ env.ICON_OUTPUT_DIR }}/icon_128x128@2x.png
-        magick ${{ env.IMAGE_PATH }} -resize 256x256 ${{ env.ICON_OUTPUT_DIR }}/icon_256x256.png
-        magick ${{ env.IMAGE_PATH }} -resize 512x512 ${{ env.ICON_OUTPUT_DIR }}/icon_256x256@2x.png
-        magick ${{ env.IMAGE_PATH }} -resize 512x512 ${{ env.ICON_OUTPUT_DIR }}/icon_512x512.png
-        magick ${{ env.IMAGE_PATH }} -resize 1024x1024 ${{ env.ICON_OUTPUT_DIR }}/icon_512x512@2x.png
+        npm i -g ts-node
+        ts-node scripts/generate-icon.ts
 
     - name: Create ICNS file
       run: iconutil -c icns ${{ env.ICON_OUTPUT_DIR }}
