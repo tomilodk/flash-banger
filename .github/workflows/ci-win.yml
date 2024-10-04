@@ -18,6 +18,10 @@ jobs:
     - name: Check out repository
       uses: actions/checkout@v3
 
+    - name: INJECT GITHUB_TOKEN
+      run: |
+        echo "GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}" >> $GITHUB_ENV
+
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:

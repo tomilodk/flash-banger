@@ -23,6 +23,10 @@ jobs:
       with:
         node-version: '18'
 
+    - name: INJECT GITHUB_TOKEN
+      run: |
+        echo "GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}" >> $GITHUB_ENV
+
     - name: Install dependencies
       run: npm install
 
