@@ -50,19 +50,12 @@ async function win() {
     const imagePath = path.join(__dirname, "../packaging/app_icon.png");
     const iconOutputPath = path.join(__dirname, "../packaging/icon.ico");
 
-    const iconSizes = [16, 32, 48, 64, 128, 256];
-
-    const resizeCommands = iconSizes.map(size => 
-        `( ${imagePath} -resize ${size}x${size} )`
-    ).join(' ');
-
-    await execAsync(`magick convert ${resizeCommands} ${iconOutputPath}`);
+    await execAsync(`convert ${imagePath} -resize 256x256 ${iconOutputPath}`);
 }
 
 async function linux() {
     const imagePath = path.join(__dirname, "../packaging/app_icon.png");
     const iconOutputPath = path.join(__dirname, "../packaging/icon.png");
 
-    // Create a single PNG file for Linux
-    await execAsync(`magick ${imagePath} -resize 256x256 ${iconOutputPath}`);
+    await execAsync(`convert ${imagePath} -resize 256x256 ${iconOutputPath}`);
 }
