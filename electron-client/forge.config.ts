@@ -23,7 +23,8 @@ const config: ForgeConfig = {
         manufacturer: 'Mappso',
         shortcutFolderName: 'Flash Banger',
         shortcutName: 'Flash Banger',
-        shortcutDescription: 'Flash Banger Application'
+        shortcutDescription: 'Flash Banger Application',
+        icon: './packaging/icon.ico'
       },
       platforms: ['win32']
     },
