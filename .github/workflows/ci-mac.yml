@@ -10,6 +10,8 @@ on:
 
 jobs:
   build:
+    env:
+      ICON_OUTPUT_DIR: packaging/icon.iconset
     runs-on: macos-latest
     defaults:
       run:
@@ -36,7 +38,7 @@ jobs:
 
     - name: Create ICNS file
       run: iconutil -c icns ${{ env.ICON_OUTPUT_DIR }}
-
+ 
     - name: Download Developer Certificate
       run: |
         echo "${{ secrets.APPLE_DEVELOPER_CERTIFICATE }}" | base64 --decode > certificate.p12
