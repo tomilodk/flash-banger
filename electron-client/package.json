@@ -37,48 +37,6 @@
   },
   "build": {
     "appId": "com.igloo.flash"
-  },
-  "config": {
-    "forge": {
-      "publishers": [
-        {
-          "name": "@electron-forge/publisher-github",
-          "config": {
-            "repository": {
-              "owner": "tomilodk",
-              "name": "flash-banger"
-            },
-            "prerelease": true
-          }
-        }
-      ],
-      "makers": [
-        {
-          "name": "@electron-forge/maker-wix",
-          "platforms": ["win32"],
-          "config": {
-            "language": 1033,
-            "manufacturer": "Mappso"
-          }
-        },
-        {
-          "name": "@electron-forge/maker-dmg",
-          "platforms": ["darwin"],
-          "config": {
-            "background": "./packaging/background.png",
-            "format": "ULFO"
-          }
-        },
-        {
-          "name": "@electron-forge/maker-deb",
-          "platforms": ["linux"],
-          "config": {}
-        }
-      ]
-    }
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/tomilodk/flash-banger.git"
+  
   }
 }
