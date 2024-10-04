@@ -61,6 +61,7 @@ jobs:
         APPLE_ID_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
         APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        DEBUG: electron-builder,electron-osx-sign*
       run: |
         npm run publish -- --platform=darwin --arch=x64
 
