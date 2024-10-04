@@ -19,7 +19,10 @@ const config: ForgeConfig = {
       name: '@electron-forge/maker-wix',
       config: {
         language: 1033,
-        manufacturer: 'Mappso'
+        manufacturer: 'Mappso',
+        shortcutFolderName: 'Flash Banger',
+        shortcutName: 'Flash Banger',
+        shortcutDescription: 'Flash Banger Application'
       },
       platforms: ['win32']
     },
