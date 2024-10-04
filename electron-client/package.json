@@ -5,7 +5,7 @@
   "scripts": {
     "start": "electron-forge start",
     "package": "electron-forge package",
-    "make": "ts-node scripts/pre.ts && electron-forge make",
+    "make": "electron-forge make",
     "publish": "electron-forge publish"
   },
   "keywords": [],

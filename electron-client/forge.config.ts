@@ -43,6 +43,7 @@ const config: ForgeConfig = {
         categories: ['Utility'],
         icon: './packaging/icon.png',
         productDescription: 'Flash Banger is a free and open-source flashbang app.',
+        executableName: 'flashbanger'
       }
     },
   ],
