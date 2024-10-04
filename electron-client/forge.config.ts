@@ -12,7 +12,8 @@ const config: ForgeConfig = {
       teamId: process.env.APPLE_TEAM_ID!,
     },
     icon: './packaging/icon',
-    name: 'Flash Banger'
+    name: 'Flash Banger',
+    executableName: 'flashbanger'
   },
   makers: [
     {
@@ -46,7 +47,7 @@ const config: ForgeConfig = {
         categories: ['Utility'],
         icon: './packaging/icon.png',
         productDescription: 'Flash Banger is a free and open-source flashbang app.',
-        executableName: 'flashbanger'
+        executableName: 'flashbanger' // This needs to match the executable name from packagerConfig
       }
     },
   ],
