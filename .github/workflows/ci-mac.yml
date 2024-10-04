@@ -3,10 +3,10 @@ name: Build and Publish Mac App
 on:
   push:
     branches:
-      - main
+      - pipeline
   pull_request:
     branches:
-      - main
+      - pipeline
 
 jobs:
   build:
