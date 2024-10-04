@@ -3,22 +3,82 @@
   "version": "1.0.0",
   "main": "main.js",
   "scripts": {
-    "start": "electron .",
+    "start": "electron-forge start",
     "build:win": "electron-builder --win --publish never",
-    "build:mac": "electron-builder --mac --publish never"
+    "build:mac": "electron-builder --mac --publish never",
+    "package": "electron-forge package",
+    "make": "electron-forge make",
+    "publish": "electron-forge publish"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "@electron-forge/cli": "^7.5.0",
+    "@electron-forge/maker-deb": "^7.5.0",
+    "@electron-forge/maker-dmg": "^7.5.0",
+    "@electron-forge/maker-rpm": "^7.5.0",
+    "@electron-forge/maker-squirrel": "^7.5.0",
+    "@electron-forge/maker-wix": "^7.5.0",
+    "@electron-forge/maker-zip": "^7.5.0",
+    "@electron-forge/plugin-auto-unpack-natives": "^7.5.0",
+    "@electron-forge/plugin-fuses": "^7.5.0",
+    "@electron-forge/publisher-github": "^7.5.0",
+    "@electron-forge/shared-types": "^7.5.0",
+    "@electron/fuses": "^1.8.0",
     "electron": "^32.1.2",
-    "electron-builder": "^25.0.5"
+    "ts-node": "^10.9.2"
   },
   "dependencies": {
+    "electron-squirrel-startup": "^1.0.1",
+    "update-electron-app": "^3.0.0",
     "ws": "^8.18.0"
   },
   "build": {
     "appId": "com.igloo.flash"
+  },
+  "config": {
+    "forge": {
+      "publishers": [
+        {
+          "name": "@electron-forge/publisher-github",
+          "config": {
+            "repository": {
+              "owner": "tomilodk",
+              "name": "flash-banger"
+            },
+            "prerelease": true
+          }
+        }
+      ],
+      "makers": [
+        {
+          "name": "@electron-forge/maker-wix",
+          "platforms": ["win32"],
+          "config": {
+            "language": 1033,
+            "manufacturer": "Mappso"
+          }
+        },
+        {
+          "name": "@electron-forge/maker-dmg",
+          "platforms": ["darwin"],
+          "config": {
+            "background": "./packaging/background.png",
+            "format": "ULFO"
+          }
+        },
+        {
+          "name": "@electron-forge/maker-deb",
+          "platforms": ["linux"],
+          "config": {}
+        }
+      ]
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tomilodk/flash-banger.git"
   }
 }
