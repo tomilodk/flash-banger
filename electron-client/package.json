@@ -29,6 +29,7 @@
     "ts-node": "^10.9.2"
   },
   "dependencies": {
+    "auto-launch": "^5.0.6",
     "dotenv": "^16.4.5",
     "electron-squirrel-startup": "^1.0.1",
     "update-electron-app": "^3.0.0",

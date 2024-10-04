@@ -5,6 +5,18 @@ const WebSocket = require('ws');
 const { updateElectronApp } = require('update-electron-app');
 updateElectronApp(); // additional configuration options available
 
+var AutoLaunch = require('auto-launch');
+var autoLauncher = new AutoLaunch({
+    name: "Flash Banger",
+});
+// Checking if autoLaunch is enabled, if not then enabling it.
+autoLauncher.isEnabled().then(function(isEnabled) {
+  if (isEnabled) return;
+   autoLauncher.enable();
+}).catch(function (err) {
+  throw err;
+});
+
 let mainWindow;
 
 function createWindow() {
@@ -58,9 +70,24 @@ function setupWebSocket() {
     ws.on('close', () => {
         console.log('WebSocket connection closed');
     });
+    // Function to reconnect WebSocket
+    function reconnectWebSocket() {
+        console.log('Attempting to reconnect WebSocket...');
+        setupWebSocket();
+    }
 
-    ws.on('error', (error) => {
-        console.error('WebSocket error:', error);
+    // Set up a ping interval to keep the connection alive
+    const pingInterval = setInterval(() => {
+        if (ws.readyState === WebSocket.OPEN) {
+            ws.ping();
+        }
+    }, 30000); // Send a ping every 30 seconds
+
+    // Handle unexpected closures and attempt to reconnect
+    ws.on('close', (code, reason) => {
+        console.log(`WebSocket connection closed: ${code} ${reason}`);
+        clearInterval(pingInterval);
+        setTimeout(reconnectWebSocket, 5000); // Attempt to reconnect after 5 seconds
     });
 }
 
