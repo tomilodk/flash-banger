@@ -12,10 +12,10 @@ jobs:
   build:
     env:
         APP_NAME: FlashBanger
-        IMAGE_PATH: ./packaging/icon.png
+        IMAGE_PATH: packaging/icon.png
         BUNDLE_ID: com.mappso.flashbanger
-        BACKGROUND_IMAGE: ./packaging/background.png
-        ICON_OUTPUT_DIR: ./packaging/icon.iconset
+        BACKGROUND_IMAGE: packaging/background.png
+        ICON_OUTPUT_DIR: packaging/icon.iconset
     runs-on: macos-latest
     defaults:
       run:
@@ -40,16 +40,17 @@ jobs:
 
     - name: Convert Image to Multiple Resolutions
       run: |
-        convert ${{ env.IMAGE_PATH }} -resize 16x16 ${{ env.ICON_OUTPUT_DIR }}/icon_16x16.png
-        convert ${{ env.IMAGE_PATH }} -resize 32x32 ${{ env.ICON_OUTPUT_DIR }}/icon_16x16@2x.png
-        convert ${{ env.IMAGE_PATH }} -resize 32x32 ${{ env.ICON_OUTPUT_DIR }}/icon_32x32.png
-        convert ${{ env.IMAGE_PATH }} -resize 64x64 ${{ env.ICON_OUTPUT_DIR }}/icon_32x32@2x.png
-        convert ${{ env.IMAGE_PATH }} -resize 128x128 ${{ env.ICON_OUTPUT_DIR }}/icon_128x128.png
-        convert ${{ env.IMAGE_PATH }} -resize 256x256 ${{ env.ICON_OUTPUT_DIR }}/icon_128x128@2x.png
-        convert ${{ env.IMAGE_PATH }} -resize 256x256 ${{ env.ICON_OUTPUT_DIR }}/icon_256x256.png
-        convert ${{ env.IMAGE_PATH }} -resize 512x512 ${{ env.ICON_OUTPUT_DIR }}/icon_256x256@2x.png
-        convert ${{ env.IMAGE_PATH }} -resize 512x512 ${{ env.ICON_OUTPUT_DIR }}/icon_512x512.png
-        convert ${{ env.IMAGE_PATH }} -resize 1024x1024 ${{ env.ICON_OUTPUT_DIR }}/icon_512x512@2x.png
+        ls -la
+        magick ${{ env.IMAGE_PATH }} -resize 16x16 ${{ env.ICON_OUTPUT_DIR }}/icon_16x16.png
+        magick ${{ env.IMAGE_PATH }} -resize 32x32 ${{ env.ICON_OUTPUT_DIR }}/icon_16x16@2x.png
+        magick ${{ env.IMAGE_PATH }} -resize 32x32 ${{ env.ICON_OUTPUT_DIR }}/icon_32x32.png
+        magick ${{ env.IMAGE_PATH }} -resize 64x64 ${{ env.ICON_OUTPUT_DIR }}/icon_32x32@2x.png
+        magick ${{ env.IMAGE_PATH }} -resize 128x128 ${{ env.ICON_OUTPUT_DIR }}/icon_128x128.png
+        magick ${{ env.IMAGE_PATH }} -resize 256x256 ${{ env.ICON_OUTPUT_DIR }}/icon_128x128@2x.png
+        magick ${{ env.IMAGE_PATH }} -resize 256x256 ${{ env.ICON_OUTPUT_DIR }}/icon_256x256.png
+        magick ${{ env.IMAGE_PATH }} -resize 512x512 ${{ env.ICON_OUTPUT_DIR }}/icon_256x256@2x.png
+        magick ${{ env.IMAGE_PATH }} -resize 512x512 ${{ env.ICON_OUTPUT_DIR }}/icon_512x512.png
+        magick ${{ env.IMAGE_PATH }} -resize 1024x1024 ${{ env.ICON_OUTPUT_DIR }}/icon_512x512@2x.png
 
     - name: Create ICNS file
       run: iconutil -c icns ${{ env.ICON_OUTPUT_DIR }}
