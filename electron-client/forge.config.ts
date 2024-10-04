@@ -34,7 +34,16 @@ const config: ForgeConfig = {
     {
       name: '@electron-forge/maker-deb',
       platforms: ['linux'],
-      config: {}
+      config: {
+        maintainer: 'Mappso <team@mappso.com>',
+        homepage: 'https://flashbanger.com',
+        description: 'Flash Banger is a free and open-source flashbang app.',
+        productName: 'Flash Banger',
+        genericName: 'Flashbang App',
+        categories: ['Utility'],
+        icon: './packaging/icon.png',
+        productDescription: 'Flash Banger is a free and open-source flashbang app.',
+      }
     },
   ],
   publishers: [
