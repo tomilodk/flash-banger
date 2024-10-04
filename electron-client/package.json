@@ -34,6 +34,10 @@
     "update-electron-app": "^3.0.0",
     "ws": "^8.18.0"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tomilodk/flash-banger.git"
+  },
   "build": {
     "appId": "com.igloo.flash",
     "win": {
