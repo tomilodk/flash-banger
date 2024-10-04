@@ -1,4 +1,4 @@
-name: Build and Create Signed DMG Installer
+name: Build and Publish Mac App
 
 on:
   push:
