@@ -27,7 +27,7 @@ jobs:
       run: npm install
 
     - name: Install ImageMagick
-      run: brew install imagemagick
+      run: sudo apt-get install imagemagick
 
     - name: Generate Iconset
       run: |
