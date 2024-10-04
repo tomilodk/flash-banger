@@ -45,7 +45,7 @@ jobs:
 
     - name: Package Electron App
       run: |
-        npx electron-packager . ${{ env.APP_NAME }} --platform=darwin --arch=x64 --icon=${{ env.ICON_OUTPUT_DIR }}/icon.icns --out=dist --overwrite
+        npm run make -- --platform=darwin --arch=x64
 
     - name: Download Developer Certificate
       run: |

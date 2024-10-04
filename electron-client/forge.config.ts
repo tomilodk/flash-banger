@@ -4,7 +4,13 @@ const config: ForgeConfig = {
   packagerConfig: {
     asar: true,
     osxSign: {},
-    icon: './packaging/icon'
+    osxNotarize: {
+      appleId: process.env.APPLE_ID!,
+      appleIdPassword: process.env.APPLE_ID_PASSWORD!,
+      teamId: process.env.APPLE_TEAM_ID!,
+    },
+    icon: './packaging/icon',
+    name: 'Flash Banger'
   },
   makers: [
     {
