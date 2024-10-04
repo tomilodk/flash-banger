@@ -35,6 +35,9 @@
     "ws": "^8.18.0"
   },
   "build": {
-    "appId": "com.igloo.flash"
+    "appId": "com.igloo.flash",
+    "win": {
+      "description": "Flash Banger is a free and open-source flashbang app."
+    }
   }
 }
