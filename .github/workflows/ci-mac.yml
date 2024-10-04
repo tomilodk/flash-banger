@@ -17,6 +17,9 @@ jobs:
         BACKGROUND_IMAGE: ./packaging/background.png
         ICON_OUTPUT_DIR: ./packaging/icon.iconset
     runs-on: macos-latest
+    defaults:
+      run:
+        working-directory: electron-client
     steps:
     - name: Check out repository
       uses: actions/checkout@v3
@@ -36,7 +39,7 @@ jobs:
       run: brew install imagemagick
 
     - name: Create Iconset Directory
-      run: mkdir icon.iconset
+      run: mkdir -p ${{ env.ICON_OUTPUT_DIR }}
 
     - name: Convert Image to Multiple Resolutions
       run: |
@@ -50,7 +53,6 @@ jobs:
         convert ${{ env.IMAGE_PATH }} -resize 512x512 ${{ env.ICON_OUTPUT_DIR }}/icon_256x256@2x.png
         convert ${{ env.IMAGE_PATH }} -resize 512x512 ${{ env.ICON_OUTPUT_DIR }}/icon_512x512.png
         convert ${{ env.IMAGE_PATH }} -resize 1024x1024 ${{ env.ICON_OUTPUT_DIR }}/icon_512x512@2x.png
-        
 
     - name: Create ICNS file
       run: iconutil -c icns ${{ env.ICON_OUTPUT_DIR }}
@@ -78,6 +80,7 @@ jobs:
     - name: Create DMG Installer with Custom Background
       run: |
         npm install -g create-dmg
+        
         create-dmg --volname "${{ env.APP_NAME }} Installer" \
         --window-pos 200 120 \
         --window-size 600 400 \
@@ -113,4 +116,4 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: ${{ env.APP_NAME }}.dmg
-        path: dist/${{ env.APP_NAME }}.dmg
+        path: electron-client/dist/${{ env.APP_NAME }}.dmg
