@@ -43,14 +43,6 @@ jobs:
     - name: Create ICNS file
       run: iconutil -c icns ${{ env.ICON_OUTPUT_DIR }}
 
-    - name: Package Electron App
-      env:
-        APPLE_ID: ${{ secrets.APPLE_ID }}
-        APPLE_ID_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
-        APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-      run: |
-        npm run make -- --platform=darwin --arch=x64
-
     - name: Download Developer Certificate
       run: |
         echo "${{ secrets.APPLE_DEVELOPER_CERTIFICATE }}" | base64 --decode > certificate.p12
@@ -64,49 +56,16 @@ jobs:
         security set-keychain-settings
         security find-identity -v -p codesigning
 
-    - name: Sign the Application
+    - name: Package Electron App
+      env:
+        APPLE_ID: ${{ secrets.APPLE_ID }}
+        APPLE_ID_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+        APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
       run: |
-        ls dist
-        ls dist/${{ env.APP_NAME }}-darwin-x64
-        codesign --deep --force --verify --verbose --sign "Developer ID Application: ${{ secrets.APPLE_TEAM_ID }}" dist/${{ env.APP_NAME }}-darwin-x64/${{ env.APP_NAME }}.app
-
-    - name: Create DMG Installer with Custom Background
-      run: |
-        npm install -g create-dmg
-        
-        create-dmg --volname "${{ env.APP_NAME }} Installer" \
-        --window-pos 200 120 \
-        --window-size 600 400 \
-        --icon-size 100 \
-        --icon "${{ env.APP_NAME }}.app" 175 120 \
-        --icon "Applications" 425 120 \
-        --background "${{ env.BACKGROUND_IMAGE }}" \
-        dist/${{ env.APP_NAME }}-darwin-x64/${{ env.APP_NAME }}.app \
-        dist/
-
-    - name: Zip the Application
-      run: |
-        ditto -c -k --sequesterRsrc --keepParent dist/${{ env.APP_NAME }}-darwin-x64/${{ env.APP_NAME }}.app dist/${{ env.APP_NAME }}.zip
-
-    - name: Notarize the Application
-      run: |
-        xcrun altool --notarize-app -f dist/${{ env.APP_NAME }}.zip --primary-bundle-id "${{ env.BUNDLE_ID }}" --username "${{ secrets.APPLE_ID }}" --password "${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}"
-    
-    - name: Wait for Notarization to Complete
-      run: |
-        echo "Waiting for notarization..."
-        sleep 300 # Adjust as needed for your app size.
-
-    - name: Staple Notarization to the App
-      run: |
-        xcrun stapler staple dist/${{ env.APP_NAME }}-darwin-x64/${{ env.APP_NAME }}.app
-
-    - name: Sign the DMG
-      run: |
-        codesign --sign "Developer ID Application: ${{ secrets.APPLE_TEAM_ID }}" dist/${{ env.APP_NAME }}.dmg
+        npm run make -- --platform=darwin --arch=x64
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v3
       with:
         name: ${{ env.APP_NAME }}.dmg
-        path: electron-client/dist/${{ env.APP_NAME }}.dmg
+        path: electron-client/out/make/*.dmg

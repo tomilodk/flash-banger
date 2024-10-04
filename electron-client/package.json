@@ -4,10 +4,8 @@
   "main": "main.js",
   "scripts": {
     "start": "electron-forge start",
-    "build:win": "electron-builder --win --publish never",
-    "build:mac": "electron-builder --mac --publish never",
     "package": "electron-forge package",
-    "make": "electron-forge make",
+    "make": "ts-node scripts/pre.ts && electron-forge make",
     "publish": "electron-forge publish"
   },
   "keywords": [],
