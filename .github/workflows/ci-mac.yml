@@ -29,9 +29,6 @@ jobs:
       with:
         node-version: '18'
 
-    - name: Goto app directory
-      run: cd electron-client
-
     - name: Install dependencies
       run: npm install
 
