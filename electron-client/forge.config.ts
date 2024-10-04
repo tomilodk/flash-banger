@@ -1,5 +1,7 @@
 import type { ForgeConfig } from '@electron-forge/shared-types';
 
+require('dotenv').config();
+
 const config: ForgeConfig = {
   packagerConfig: {
     asar: true,

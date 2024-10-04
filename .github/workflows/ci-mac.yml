@@ -44,6 +44,10 @@ jobs:
       run: iconutil -c icns ${{ env.ICON_OUTPUT_DIR }}
 
     - name: Package Electron App
+      env:
+        APPLE_ID: ${{ secrets.APPLE_ID }}
+        APPLE_ID_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+        APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
       run: |
         npm run make -- --platform=darwin --arch=x64
 

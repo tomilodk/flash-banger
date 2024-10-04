@@ -3,3 +3,4 @@ dist
 out/
 packaging/icon.iconset
 packaging/icon.icns
+.env
