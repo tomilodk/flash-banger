@@ -60,7 +60,8 @@ const config: ForgeConfig = {
           owner: 'tomilodk',
           name: 'flash-banger'
         },
-        prerelease: true
+        prerelease: true,
+        release: true
       }
     }
   ]
