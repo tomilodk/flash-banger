@@ -26,9 +26,6 @@ jobs:
     - name: Install dependencies
       run: npm install
 
-    - name: Install ImageMagick
-      run: sudo apt-get install imagemagick
-
     - name: Generate Iconset
       run: |
         npm i -g ts-node
