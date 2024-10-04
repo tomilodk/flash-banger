@@ -46,8 +46,7 @@ const config: ForgeConfig = {
         genericName: 'Flashbang App',
         categories: ['Utility'],
         icon: './packaging/icon.png',
-        productDescription: 'Flash Banger is a free and open-source flashbang app.',
-        executableName: 'flashbanger' // This needs to match the executable name from packagerConfig
+        productDescription: 'Flash Banger is a free and open-source flashbang app.'
       }
     },
   ],

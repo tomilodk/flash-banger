@@ -1,5 +1,5 @@
 {
-  "name": "electron-client",
+  "name": "flashbanger",
   "version": "1.0.0",
   "main": "main.js",
   "scripts": {
@@ -35,9 +35,6 @@
     "ws": "^8.18.0"
   },
   "build": {
-    "appId": "com.igloo.flash",
-    "linux": {
-      "target": "AppImage"
-    }
+    "appId": "com.igloo.flash"
   }
 }
