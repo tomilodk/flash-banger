@@ -10,6 +10,9 @@ on:
 
 jobs:
   build:
+    permissions:
+      contents: write  # Allow writing to the repository
+      actions: read    # Allow reading actions (optional)
     env:
       ICON_OUTPUT_DIR: packaging/icon.iconset
     runs-on: macos-latest

@@ -11,6 +11,9 @@ on:
 jobs:
   build:
     runs-on: windows-latest
+    permissions:
+      contents: write  # Allow writing to the repository
+      actions: read    # Allow reading actions (optional)
     defaults:
       run:
         working-directory: electron-client
