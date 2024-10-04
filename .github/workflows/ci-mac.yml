@@ -74,6 +74,8 @@ jobs:
 
     - name: Sign the Application
       run: |
+        ls dist
+        ls dist/${{ env.APP_NAME }}-darwin-x64
         codesign --deep --force --verify --verbose --sign "Developer ID Application: ${{ secrets.APPLE_TEAM_ID }}" dist/${{ env.APP_NAME }}-darwin-x64/${{ env.APP_NAME }}.app
 
     - name: Create DMG Installer with Custom Background
