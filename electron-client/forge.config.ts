@@ -20,7 +20,8 @@ const config: ForgeConfig = {
       config: {
         language: 1033,
         manufacturer: 'Mappso'
-      }
+      },
+      platforms: ['win32']
     },
     {
       name: '@electron-forge/maker-dmg',

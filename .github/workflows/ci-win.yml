@@ -1,0 +1,40 @@
+name: Build and Create Signed DMG Installer
+
+on:
+  push:
+    branches:
+      - pipeline
+  pull_request:
+    branches:
+      - pipeline
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: electron-client
+    steps:
+    - name: Check out repository
+      uses: actions/checkout@v3
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Install ImageMagick
+      run: brew install imagemagick
+
+    - name: Generate Iconset
+      run: |
+        npm i -g ts-node
+        ts-node scripts/generate-icon.ts win
+
+    - name: Package Electron App
+      run: |
+        npm run publish -- --platform=win32 --arch=x64
+

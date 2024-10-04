@@ -3,19 +3,13 @@ name: Build and Create Signed DMG Installer
 on:
   push:
     branches:
-      - pipeline
+      - main
   pull_request:
     branches:
-      - pipeline
+      - main
 
 jobs:
   build:
-    env:
-        APP_NAME: FlashBanger
-        IMAGE_PATH: packaging/app_icon.png
-        BUNDLE_ID: com.mappso.flashbanger
-        BACKGROUND_IMAGE: packaging/background.png
-        ICON_OUTPUT_DIR: packaging/icon.iconset
     runs-on: macos-latest
     defaults:
       run:
@@ -38,7 +32,7 @@ jobs:
     - name: Generate Iconset
       run: |
         npm i -g ts-node
-        ts-node scripts/generate-icon.ts
+        ts-node scripts/generate-icon.ts mac
 
     - name: Create ICNS file
       run: iconutil -c icns ${{ env.ICON_OUTPUT_DIR }}
