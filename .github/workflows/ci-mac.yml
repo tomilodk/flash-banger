@@ -62,10 +62,5 @@ jobs:
         APPLE_ID_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
         APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
       run: |
-        npm run make -- --platform=darwin --arch=x64
+        npm run publish -- --platform=darwin --arch=x64
 
-    - name: Upload Artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: ${{ env.APP_NAME }}.dmg
-        path: electron-client/out/make/*.dmg
