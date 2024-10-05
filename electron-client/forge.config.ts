@@ -35,12 +35,11 @@ const config: ForgeConfig = {
       config: {
         background: './packaging/background.png',
         format: 'ULFO',
-        contents: [
+        contents:
           function (opts: { appPath: string }) {
             return [{ x: 344, y: 349, type: 'link', path: '/Applications' },
             { x: 344, y: 144, type: 'file', path: opts.appPath }];
           }
-        ]
       }
     },
     {
