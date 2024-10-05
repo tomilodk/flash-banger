@@ -35,9 +35,6 @@
     "update-electron-app": "^3.0.0",
     "ws": "^8.18.0"
   },
-  "optionalDependencies": {
-    "appdmg": "^0.6.6"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/tomilodk/flash-banger.git"

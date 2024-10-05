@@ -31,6 +31,9 @@ jobs:
     - name: Install setuptools
       run: python3 -m pip install setuptools
 
+    - name: Install appdmg
+      run: npm i -g appdmg
+
     - name: Install dependencies
       run: npm install
 
