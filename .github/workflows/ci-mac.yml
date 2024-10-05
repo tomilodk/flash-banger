@@ -29,10 +29,11 @@ jobs:
         node-version: '18'
 
     - name: Install setuptools
-      run: python3 -m pip install setuptools
+      run: |
+        python3 -m pip install --upgrade pip setuptools --break-system-packages
 
     - name: Install appdmg
-      run: npm i -g appdmg
+      run: npm i -D appdmg
 
     - name: Install dependencies
       run: npm install
@@ -61,7 +62,17 @@ jobs:
         security set-keychain-settings
         security find-identity -v -p codesigning
 
-    - name: Package Electron App
+    - name: Package Electron App ARM
+      env:
+        APPLE_ID: ${{ secrets.APPLE_ID }}
+        APPLE_ID_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+        APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        DEBUG: electron-builder,electron-osx-sign*
+      run: |
+        npm run publish -- --platform=darwin --arch=arm64
+
+    - name: Package Electron App x64
       env:
         APPLE_ID: ${{ secrets.APPLE_ID }}
         APPLE_ID_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
