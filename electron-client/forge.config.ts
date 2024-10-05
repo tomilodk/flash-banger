@@ -33,8 +33,10 @@ const config: ForgeConfig = {
       name: '@electron-forge/maker-dmg',
       platforms: ['darwin'],
       config: {
+        overwrite: true,
         background: './packaging/background.png',
         format: 'ULFO',
+        icon: './packaging/icon.icns',
         contents:
           function (opts: { appPath: string }) {
             return [{ x: 344, y: 349, type: 'link', path: '/Applications' },
