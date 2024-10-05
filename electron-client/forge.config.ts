@@ -34,7 +34,13 @@ const config: ForgeConfig = {
       platforms: ['darwin'],
       config: {
         background: './packaging/background.png',
-        format: 'ULFO'
+        format: 'ULFO',
+        contents: [
+          function (opts: { appPath: string }) {
+            return [{ x: 448, y: 344, type: 'link', path: '/Applications' },
+            { x: 192, y: 344, type: 'file', path: opts.appPath }];
+          }
+        ]
       }
     },
     {
