@@ -37,8 +37,8 @@ const config: ForgeConfig = {
         format: 'ULFO',
         contents: [
           function (opts: { appPath: string }) {
-            return [{ x: 448, y: 344, type: 'link', path: '/Applications' },
-            { x: 192, y: 344, type: 'file', path: opts.appPath }];
+            return [{ x: 344, y: 349, type: 'link', path: '/Applications' },
+            { x: 344, y: 144, type: 'file', path: opts.appPath }];
           }
         ]
       }
