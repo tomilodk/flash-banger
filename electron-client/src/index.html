@@ -4,65 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flash Overlay</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-            background-color: transparent;
-        }
-        #flashOverlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: white;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.5s ease, visibility 0s 0.5s;
-            z-index: 9999;
-        }
-        #flashOverlay.show {
-            visibility: visible;
-            opacity: 1;
-            transition: opacity 0.5s ease;
-        }
-
-        #flashText {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-weight: bold;
-            text-align: center;
-            font-size: 10vw;
-            width: 50%;
-            height: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-    </style>
+    
 </head>
 <body>
-    <!-- This is the fullscreen overlay that flashes white -->
-    <div id="flashOverlay">
-        <p id="flashText"></p>
-    </div>
-
-    <script>
-        const { ipcRenderer } = require('electron');
-
-        // Listen for 'flash' event from the main process
-        ipcRenderer.on('flash', (event, data) => {
-            const flashOverlay = document.getElementById('flashOverlay');
-            flashOverlay.classList.add('show');  // Show the flash
-            document.getElementById('flashText').textContent = data.text;
-            setTimeout(() => {
-                flashOverlay.classList.remove('show');  // Hide the flash after 1 second
-            }, 1000);
-        });
-    </script>
+    
 </body>
 </html>
