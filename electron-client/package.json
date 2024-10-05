@@ -25,7 +25,6 @@
     "@electron-forge/publisher-github": "^7.5.0",
     "@electron-forge/shared-types": "^7.5.0",
     "@electron/fuses": "^1.8.0",
-    "appdmg": "^0.6.6",
     "electron": "^32.1.2",
     "ts-node": "^10.9.2"
   },
