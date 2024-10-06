@@ -30,6 +30,18 @@ const createWindow = (): void => {
     frame: false,              // No window frame (borderless)
     alwaysOnTop: true,         // Ensure it stays on top
     skipTaskbar: true,         // Don't show it in the taskbar (Windows/Linux)
+    closable: false,
+    hasShadow: false,
+    movable: false,
+    hiddenInMissionControl: true,
+    autoHideMenuBar: true,
+    enableLargerThanScreen: true,
+    resizable: false,
+    roundedCorners: false,
+    maximizable: false,
+    focusable: false,
+    fullscreenable: false,
+
     webPreferences: {
       nodeIntegration: true,  // Allow using Node.js modules in the renderer
       contextIsolation: true,
