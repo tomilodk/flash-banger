@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import './flasher.css';
+import './flasher.scss';
 declare global {
     interface Window {
         electronAPI: {
