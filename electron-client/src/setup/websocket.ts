@@ -16,7 +16,7 @@ export function getWebSocket() {
 }
 
 export function addWebSocket() {
-    ws = new WebSocket('ws://localhost:8080/ws');  // Replace with your WebSocket server address
+    ws = new WebSocket('wss://flash.igloo.dk/ws');  // Replace with your WebSocket server address
   
     ws.on('open', () => {
       console.log('WebSocket connection established');
