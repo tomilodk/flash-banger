@@ -1,12 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './flasher.scss';
-declare global {
-    interface Window {
-        electronAPI: {
-            onFlash: (callback: (event: any, data: any) => void) => void;
-        }
-    }
-}
+
 
 const Flasher: React.FC = () => {
 
