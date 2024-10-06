@@ -3,7 +3,7 @@ import { mainWindow } from "../..";
 import { hasEnteredName } from "../initial-launch-rules";
 
 export function toggleActionMenu(action: keyof typeof ACTIONS) {
-    if (!hasEnteredName && action !== "set-name") {
+    if (!hasEnteredName() && action !== "set-name") {
         sendToggleActionMenu("set-name");
         return;
     }
