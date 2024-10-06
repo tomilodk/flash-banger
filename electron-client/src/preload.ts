@@ -16,6 +16,7 @@ declare global {
             clickable: (clickable: boolean) => void;
             onToggleActionMenu: (callback: (action: keyof typeof ACTIONS) => void) => void;
             setName: (name: string) => void;
+            sendMessage: (name: string, text: string) => void;
         }
     }
 }
@@ -37,6 +38,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
     },
     setName: (name: string) => {
         ipcRenderer.send('set-name', name);
+    },
+    sendMessage: (name: string, text: string) => {
+        ipcRenderer.send('send-message', name, text);
     }
 });
 

@@ -13,4 +13,14 @@ export function addBridge() {
             body: name
         }));
     });
+
+    ipcMain.on('send-message', (event: Electron.IpcMainEvent, name: string, text: string) => {
+        getWebSocket().send(JSON.stringify({
+            command: "send-message",
+            body: {
+                name,
+                text
+            }
+        }));
+    });
 }
