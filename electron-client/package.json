@@ -44,11 +44,13 @@
   "dependencies": {
     "@types/auto-launch": "^5.0.5",
     "auto-launch": "^5.0.6",
+    "bufferutil": "^4.0.8",
     "electron-squirrel-startup": "^1.0.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "sass": "^1.79.4",
-    "update-electron-app": "^3.0.0"
+    "update-electron-app": "^3.0.0",
+    "utf-8-validate": "^5.0.10"
   },
   "repository": {
     "type": "git",
