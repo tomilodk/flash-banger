@@ -127,8 +127,3 @@ app.whenReady().then(() => {
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit();
 });
-
-ipcMain.on('flash', (event: Electron.IpcMainEvent, data: any) => {
-  console.log('Flash event received in main process:', data);
-  mainWindow.webContents.send('flash', data);
-});
