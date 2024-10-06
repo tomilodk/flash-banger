@@ -78,6 +78,8 @@ func handleClientConnection(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 
+		log.Printf("Received message: %s", message)
+
 		var msg struct {
 			Command string `json:"command"`
 			Body    string `json:"body"`
@@ -153,7 +155,7 @@ func triggerFlash(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Printf("Flash triggered for client: %s", targetClient.ID)
+	log.Printf("Flash triggered for client: %s, clientName: %s, text: %s", targetClient.ID, targetClient.Name, text)
 	w.WriteHeader(http.StatusOK)
 }
 

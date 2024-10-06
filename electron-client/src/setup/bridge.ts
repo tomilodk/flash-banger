@@ -7,9 +7,7 @@ export function addBridge() {
         mainWindow.setIgnoreMouseEvents(!clickable, { forward: true });
     });
 
-    ipcMain.on('setName', (event: Electron.IpcMainEvent, name: string) => {
-        mainWindow.webContents.send('setName', name);
-        
+    ipcMain.on('set-name', (event: Electron.IpcMainEvent, name: string) => {
         getWebSocket().send(JSON.stringify({
             command: "set-name",
             body: name
