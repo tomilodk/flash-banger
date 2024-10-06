@@ -1,5 +1,5 @@
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import { Input } from "../../shadcn/input"
 
 export default function FlashAction() {
@@ -7,38 +7,40 @@ export default function FlashAction() {
    const [selectedIndex, setSelectedIndex] = useState(0)
    const [showInput, setShowInput] = useState(false)
    const [message, setMessage] = useState("")
-   const names = [
-      "Alice Johnson",
-      "Bob Smith",
-      "Charlie Davis",
-      "David Lee",
-      "Emily Chen",
-      "Frank Patel",
-      "Grace Nguyen",
-      "Henry Gonzalez",
-      "Isabella Hernandez",
-      "Jacob Ramirez",
-   ]
+   const [names, setNames] = useState<string[] | null>(null)
+   const [loadingNames, setLoadingNames] = useState(false)
+   const [yourName, setYourName] = useState("")
+
    const filteredNames = useMemo(() => {
-      return names.filter((name) => name.toLowerCase().includes(searchTerm.toLowerCase()))
-   }, [searchTerm])
+      return names?.filter(name => name !== yourName).filter((name) => name.toLowerCase().includes(searchTerm.toLowerCase())) || []
+   }, [searchTerm, names, yourName])
+
    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.key === "ArrowUp") {
          setSelectedIndex((prevIndex) => (prevIndex === 0 ? filteredNames.length - 1 : prevIndex - 1))
       } else if (e.key === "ArrowDown") {
          setSelectedIndex((prevIndex) => (prevIndex === filteredNames.length - 1 ? 0 : prevIndex + 1))
       } else if (e.key === "Enter") {
+         if (!filteredNames[selectedIndex]) {
+            console.log("No name selected");
+            return
+         }
+
          setShowInput(true)
          setSearchTerm("")
       }
    }
    const handleNameClick = (index: number) => {
+     
+
       setSelectedIndex(index)
       setShowInput(true)
       setSearchTerm("")
    }
    const handleSendMessage = () => {
+
       const name = filteredNames[selectedIndex];
+
       const text = message;
 
       window.electronAPI.sendMessage(name, text);
@@ -49,6 +51,21 @@ export default function FlashAction() {
       setMessage("")
       setShowInput(false)
    }
+
+   useEffect(() => {
+      window.electronAPI.getMyName().then((name) => {
+         setYourName(name)
+      })
+      setLoadingNames(true)
+      window.electronAPI.getNames().then((names) => {
+         console.log({ names })
+         setNames(names.split(","))
+      }).catch((error) => {
+         console.error(error)
+      }).finally(() => {
+         setLoadingNames(false)
+      })
+   }, [])
 
    return (
       <div className="flex flex-col items-center justify-center">
@@ -62,6 +79,11 @@ export default function FlashAction() {
                   onKeyDown={handleKeyDown}
                   className="w-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
                />
+               {
+                  loadingNames && (
+                     <div>Loading names...</div>
+                  )
+               }
                {filteredNames.length > 0 && !showInput && (
                   <ul className="relative z-10 w-full mt-2 bg-white shadow-lg rounded-lg">
                      {filteredNames.map((name, index) => (

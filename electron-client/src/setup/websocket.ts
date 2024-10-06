@@ -40,6 +40,10 @@ export function addWebSocket() {
       if (messageObject.command === 'flash') {
         mainWindow.webContents.send('flash', { text: messageObject.body });
       }
+
+      if (messageObject.command === 'get-names-response') {
+        mainWindow.webContents.send('get-names-response', messageObject.body);
+      }
     });
   
     ws.on('close', () => {

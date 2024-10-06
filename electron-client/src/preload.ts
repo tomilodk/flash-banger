@@ -21,6 +21,8 @@ declare global {
             sendMessage: (name: string, text: string) => void;
             closeActionMenu: () => void;
             openActionMenu: (action: keyof typeof ACTIONS) => void;
+            getNames: () => Promise<string>;
+            getMyName: () => Promise<string>;
         }
     }
 }
@@ -66,7 +68,33 @@ contextBridge.exposeInMainWorld('electronAPI', {
     },
     sendMessage: (name: string, text: string) => {
         ipcRenderer.send('send-message', name, text);
-    }
+    },
+    getNames: () => {
+        return new Promise((resolve, reject) => {
+            ipcRenderer.send('get-names');
+
+            setTimeout(() => {
+                reject('Timeout');
+            }, 10000);
+
+            ipcRenderer.on('get-names-response', (event, names) => {
+                resolve(names);
+            });
+        });
+    },
+    getMyName: () => {
+        return new Promise((resolve, reject) => {
+            ipcRenderer.send('get-my-name');
+
+            setTimeout(() => {
+                reject('Timeout');
+            }, 10000);
+
+            ipcRenderer.on('get-my-name-response', (event, name) => {
+                resolve(name);
+            });
+        });
+    },
 });
 
 console.log('Preload script is running');

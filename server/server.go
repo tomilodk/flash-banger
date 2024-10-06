@@ -5,6 +5,7 @@ import (
 	"log"
 	"math/rand"
 	"net/http"
+	"strings"
 	"sync"
 	"time"
 
@@ -75,6 +76,16 @@ func sendFlashToClient(name string, text string) {
 	log.Printf("Flash triggered for client: %s, clientName: %s, text: %s", targetClient.ID, targetClient.Name, text)
 }
 
+func getNames() []string {
+	clientsMutex.Lock()
+	defer clientsMutex.Unlock()
+	names := make([]string, 0, len(clients))
+	for _, client := range clients {
+		names = append(names, client.Name)
+	}
+	return names
+}
+
 // WebSocket handler for client connections
 func handleClientConnection(w http.ResponseWriter, r *http.Request) {
 	conn, err := upgrader.Upgrade(w, r, nil)
@@ -142,6 +153,20 @@ func handleClientConnection(w http.ResponseWriter, r *http.Request) {
 			}
 
 			sendFlashToClient(requestBody.Name, requestBody.Text)
+		} else if msg.Command == "get-names" {
+			var response struct {
+				Command string `json:"command"`
+				Body    string `json:"body"`
+			}
+			response.Command = "get-names-response"
+			response.Body = strings.Join(getNames(), ",")
+
+			jsonResponse, err := json.Marshal(response)
+			if err != nil {
+				log.Printf("Error marshaling JSON: %v", err)
+				continue
+			}
+			conn.WriteMessage(websocket.TextMessage, jsonResponse)
 		}
 	}
 }

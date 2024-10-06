@@ -1,6 +1,7 @@
 import { ipcMain } from "electron";
 import { mainWindow } from "..";
 import { getWebSocket } from "./websocket";
+import { storage } from "../lib/storage";
 
 export function addBridge() {
     ipcMain.on('clickable', (event: Electron.IpcMainEvent, clickable: boolean) => {
@@ -22,5 +23,16 @@ export function addBridge() {
                 text
             })
         }));
+    });
+
+    ipcMain.on('get-names', (event: Electron.IpcMainEvent) => {
+        getWebSocket().send(JSON.stringify({
+            command: "get-names",
+            body: ""
+        }));
+    });
+
+    ipcMain.on('get-my-name', (event: Electron.IpcMainEvent) => {
+        event.reply('get-my-name-response', storage.getItem("name"))
     });
 }
