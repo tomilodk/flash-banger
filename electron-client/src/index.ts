@@ -7,21 +7,12 @@ if (require('electron-squirrel-startup')) {
   app.quit();
 }
 
-import { updateElectronApp } from 'update-electron-app';
-updateElectronApp(); // additional configuration options available
-
-import AutoLaunch from 'auto-launch';
 import { addWebsocket } from './setup/websocket';
-const autoLauncher = new AutoLaunch({
-  name: "Flash Banger",
-});
-// Checking if autoLaunch is enabled, if not then enabling it.
-autoLauncher.isEnabled().then(function (isEnabled) {
-  if (isEnabled) return;
-  autoLauncher.enable();
-}).catch(function (err) {
-  throw err;
-});
+import { addAutoUpdate } from './setup/auto-update';
+import { addAutoLaunch } from './setup/auto-launch';
+
+addAutoUpdate();
+addAutoLaunch();
 
 export let mainWindow: BrowserWindow;
 
@@ -60,7 +51,6 @@ app.on('window-all-closed', () => {
 });
 
 ipcMain.on('clickable', (event: Electron.IpcMainEvent, clickable: boolean) => {
-  console.log('clickable event received in main', clickable);
   mainWindow.setIgnoreMouseEvents(!clickable, { forward: true });
 });
 
