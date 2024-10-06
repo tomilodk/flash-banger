@@ -1,12 +1,15 @@
 
 import { useState, useMemo, useEffect } from "react"
 import { Input } from "../../shadcn/input"
+import { Form, FormControl, FormField, FormItem, FormMessage } from "../../shadcn/form"
+import { z } from "zod"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
 
 export default function FlashAction() {
    const [searchTerm, setSearchTerm] = useState("")
    const [selectedIndex, setSelectedIndex] = useState(0)
    const [showInput, setShowInput] = useState(false)
-   const [message, setMessage] = useState("")
    const [names, setNames] = useState<string[] | null>(null)
    const [loadingNames, setLoadingNames] = useState(false)
    const [yourName, setYourName] = useState("")
@@ -31,24 +34,21 @@ export default function FlashAction() {
       }
    }
    const handleNameClick = (index: number) => {
-     
+
 
       setSelectedIndex(index)
       setShowInput(true)
       setSearchTerm("")
    }
-   const handleSendMessage = () => {
+   const handleSendMessage = (text: string) => {
 
       const name = filteredNames[selectedIndex];
-
-      const text = message;
 
       window.electronAPI.sendMessage(name, text);
 
       window.electronAPI.closeActionMenu();
 
       console.log(`Sending message to ${name}: ${text}`)
-      setMessage("")
       setShowInput(false)
    }
 
@@ -66,6 +66,21 @@ export default function FlashAction() {
          setLoadingNames(false)
       })
    }, [])
+
+   const messageSchema = z.object({
+      text: z.string().min(1).max(100).regex(/^[a-zA-Z0-9\s]+$/, "Only letters, numbers and spaces are allowed")
+   })
+
+   const form = useForm<z.infer<typeof messageSchema>>({
+      resolver: zodResolver(messageSchema),
+      defaultValues: {
+         text: "",
+      },
+   })
+
+   function onSubmit(values: z.infer<typeof messageSchema>) {
+      handleSendMessage(values.text)
+   }
 
    return (
       <div className="flex flex-col items-center justify-center">
@@ -102,19 +117,35 @@ export default function FlashAction() {
          )}
          {showInput && (
             <div className="w-full max-w-md">
-               <Input
-                  type="text"
-                  placeholder={`Message ${filteredNames[selectedIndex]}`}
-                  value={message}
-                  autoFocus
-                  onChange={(e) => setMessage(e.target.value)}
-                  onKeyDown={(e) => {
-                     if (e.key === "Enter") {
-                        handleSendMessage()
+               <Form {...form}>
+                  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8" onKeyDown={(e) => {
+                     if (e.key === 'Enter') {
+                        form.handleSubmit(onSubmit)(e);
                      }
-                  }}
-                  className="w-full rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
-               />
+                  }}>
+                     <FormField
+                        control={form.control}
+                        name="text"
+                        render={({ field }) => (
+                           <FormItem>
+                              <FormControl>
+                                 <Input
+                                    type="text"
+                                    placeholder={`Message ${filteredNames[selectedIndex]}`}
+                                    value={field.value}
+                                    autoFocus
+                                    onChange={(e) => field.onChange(e.target.value)}
+
+                                    className="w-full rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+                                 />
+                              </FormControl>
+                              <FormMessage />
+                           </FormItem>
+                        )}
+                     />
+                  </form>
+               </Form>
+
             </div>
          )}
       </div>
