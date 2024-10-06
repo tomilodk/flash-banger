@@ -8,7 +8,7 @@ const ActionMenu: React.FC = () => {
 
     return (
         visible && (
-            <Card id='action-menu' className='w-[350px] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50'>
+            <Card id='action-menu' className='w-[350px] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 p-3'>
                 {React.createElement(ACTIONS[action])}
             </Card>
         )
