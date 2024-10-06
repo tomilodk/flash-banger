@@ -7,7 +7,7 @@ if (require('electron-squirrel-startup')) {
   app.quit();
 }
 
-import { addWebsocket } from './setup/websocket';
+import { addWebSocket } from './setup/websocket';
 import { addAutoUpdate } from './setup/auto-update';
 import { addAutoLaunch } from './setup/auto-launch';
 import { addBridge } from './setup/bridge';
@@ -60,7 +60,7 @@ app.whenReady().then(() => {
   }
 
   createWindow();
-  addWebsocket();
+  addWebSocket();
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();

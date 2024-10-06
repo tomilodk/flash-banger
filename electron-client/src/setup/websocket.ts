@@ -2,7 +2,7 @@ import WebSocket from 'ws';
 import { mainWindow } from '..';
 
 // Set up WebSocket (or HTTP) to listen for flash commands
-export function addWebsocket() {
+export function addWebSocket() {
     const ws = new WebSocket('wss://flash.igloo.dk/ws');  // Replace with your WebSocket server address
   
     ws.on('open', () => {
@@ -28,7 +28,7 @@ export function addWebsocket() {
     // Function to reconnect WebSocket
     function reconnectWebSocket() {
       console.log('Attempting to reconnect WebSocket...');
-      addWebsocket();
+      addWebSocket();
     }
   
     // Set up a ping interval to keep the connection alive
