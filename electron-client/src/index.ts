@@ -12,6 +12,7 @@ import { addAutoUpdate } from './setup/auto-update';
 import { addAutoLaunch } from './setup/auto-launch';
 import { addBridge } from './setup/bridge';
 import { addShortcuts } from './setup/shortcuts';
+import { initialLaunchRules } from './setup/initial-launch-rules';
 
 export let mainWindow: BrowserWindow;
 
@@ -75,6 +76,9 @@ app.whenReady().then(() => {
   createWindow();
   addWebSocket();
   addShortcuts();
+  setTimeout(() => {
+    initialLaunchRules();
+  }, 1000);
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
