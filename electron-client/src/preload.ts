@@ -12,6 +12,7 @@ declare global {
     interface Window {
         electronAPI: {
             onFlash: (callback: (event: Electron.IpcRendererEvent, data: FlashData) => void) => void;
+            clickable: (clickable: boolean) => void;
         }
     }
 }
@@ -23,6 +24,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
             callback(event, data);
         });
     },
+    clickable: (clickable: boolean) => {
+        ipcRenderer.send('clickable', clickable);
+    }
 });
 
 console.log('Preload script is running');

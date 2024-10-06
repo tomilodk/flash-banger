@@ -59,6 +59,9 @@ app.on('window-all-closed', () => {
   }
 });
 
+ipcMain.on('clickable', (event: Electron.IpcMainEvent, clickable: boolean) => {
+  mainWindow.setIgnoreMouseEvents(clickable, { forward: true });
+});
 
 // Set up WebSocket (or HTTP) to listen for flash commands
 function setupWebSocket() {
