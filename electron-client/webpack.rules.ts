@@ -36,4 +36,22 @@ export const rules: Required<ModuleOptions>['rules'] = [
       'sass-loader'    // Compiles Sass to CSS
     ],
   },
+  {
+    test: /\.css$/,
+    use: [
+      'style-loader',
+      'css-loader',
+      {
+        loader: 'postcss-loader',
+        options: {
+          postcssOptions: {
+            plugins: [
+              'tailwindcss',
+              'autoprefixer',
+            ],
+          },
+        },
+      },
+    ],
+  },
 ];

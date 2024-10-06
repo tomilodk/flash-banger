@@ -1,10 +1,10 @@
 import { fontFamily } from "tailwindcss/defaultTheme"
-import { Config } from "tailwindcss"
 import tailwindcssAnimate from "tailwindcss-animate"
 
-const config: Config = {
+/** @type {import('tailwindcss').Config} */
+module.exports = {
     darkMode: ["class"],
-    content: ["app/**/*.{ts,tsx}", "components/**/*.{ts,tsx}"],
+    content: ["src/**/*.{ts,tsx}", "src/shadcn/**/*.{ts,tsx}"],
     theme: {
         container: {
             center: true,
@@ -76,4 +76,3 @@ const config: Config = {
     plugins: [tailwindcssAnimate],
 }
 
-export default config;
