@@ -13,6 +13,7 @@ declare global {
         electronAPI: {
             onFlash: (callback: (event: Electron.IpcRendererEvent, data: FlashData) => void) => void;
             clickable: (clickable: boolean) => void;
+            onToggleActionMenu: (callback: () => void) => void;
         }
     }
 }
@@ -26,6 +27,12 @@ contextBridge.exposeInMainWorld('electronAPI', {
     },
     clickable: (clickable: boolean) => {
         ipcRenderer.send('clickable', clickable);
+    },
+    onToggleActionMenu: (callback: () => void) => {
+        ipcRenderer.on('toggle-action-menu', () => {
+            console.log('toggle-action-menu event received in preload');
+            callback();
+        });
     }
 });
 
