@@ -17,10 +17,10 @@ export function addBridge() {
     ipcMain.on('send-message', (event: Electron.IpcMainEvent, name: string, text: string) => {
         getWebSocket().send(JSON.stringify({
             command: "send-message",
-            body: {
+            body: JSON.stringify({
                 name,
                 text
-            }
+            })
         }));
     });
 }

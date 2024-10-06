@@ -1,5 +1,7 @@
 import WebSocket from 'ws';
 import { mainWindow } from '..';
+import { hasEnteredName } from './initial-launch-rules';
+import { storage } from '../lib/storage';
 
 // Set up WebSocket (or HTTP) to listen for flash commands
 
@@ -9,15 +11,22 @@ export function getWebSocket() {
     if(!ws) {
         addWebSocket();
     }
-    
+
     return ws;
 }
 
 export function addWebSocket() {
-    ws = new WebSocket('wss://flash.igloo.dk/ws');  // Replace with your WebSocket server address
+    ws = new WebSocket('ws://localhost:8080/ws');  // Replace with your WebSocket server address
   
     ws.on('open', () => {
       console.log('WebSocket connection established');
+
+      if(hasEnteredName()) {
+        ws.send(JSON.stringify({
+          command: "set-name",
+          body: storage.getItem("name")
+        }));
+      }
     });
   
     ws.on('message', (data) => {
