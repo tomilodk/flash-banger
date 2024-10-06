@@ -1,3 +1,12 @@
 # flash-banger
 
-I want to create a go client which I can download on windows and macos. Each client connects to a server also made in go, where an id for each clients are created. Then I want to call the server with a POST call where I define the client id. And a WHITE screen like a flash in csgo should appear and fade away again on the clients computer.
+This is a desktop application that allows you to send quick, attention-grabbing messages (flashes) to other users on the network. It's designed for instant communication in a visually striking way.
+
+## Features
+
+- **Action Menu**: A centralized interface for various actions, accessible via keyboard shortcut (ALT + SHIFT + .).
+- **Flash Messages**: Send and receive eye-catching notifications across the network.
+
+## Installation
+Under releases, download the latest version for your operating system.
+
