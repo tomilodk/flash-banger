@@ -3,9 +3,12 @@ import Flasher from './components/flasher';
 import './globals.css';
 import './index.css';
 import ActionMenu from './components/action-menu';
+import { ActionMenuProvider } from './hooks/useActionMenu';
 
 const root = createRoot(document.getElementById('root'));
 root.render(<>
    <Flasher />
-   <ActionMenu />
+   <ActionMenuProvider>
+      <ActionMenu />
+   </ActionMenuProvider>
 </>);
