@@ -12,7 +12,8 @@ const config: ForgeConfig = {
     asar: true,
     icon: './packaging/icon',
     name: 'Flash Banger',
-    executableName: 'flashbanger'
+    executableName: 'flashbanger',
+    osxSign: {}
   },
   rebuildConfig: {},
   makers: [
