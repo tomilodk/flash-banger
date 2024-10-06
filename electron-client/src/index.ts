@@ -26,6 +26,7 @@ autoLauncher.isEnabled().then(function (isEnabled) {
 let mainWindow: BrowserWindow;
 
 const createWindow = (): void => {
+  console.log({ MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY, MAIN_WINDOW_WEBPACK_ENTRY });
   // Create the browser window.
   mainWindow = new BrowserWindow({
     width: 1920,
@@ -37,7 +38,8 @@ const createWindow = (): void => {
     skipTaskbar: true,         // Don't show it in the taskbar (Windows/Linux)
     webPreferences: {
       nodeIntegration: true,  // Allow using Node.js modules in the renderer
-      contextIsolation: false,
+      contextIsolation: true,
+      preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
     }
   });
   // Enable click-through: allows clicking through the window
@@ -45,12 +47,8 @@ const createWindow = (): void => {
 
   // and load the index.html of the app.
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
+  mainWindow.webContents.openDevTools({ mode: 'detach' });
 };
-
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
-app.on('ready', createWindow);
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
