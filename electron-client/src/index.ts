@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, screen } from 'electron';
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
 
@@ -23,14 +23,13 @@ const createWindow = (): void => {
   console.log({ MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY, MAIN_WINDOW_WEBPACK_ENTRY });
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    width: 1920,
-    height: 1080,
+    width: screen.getPrimaryDisplay().workAreaSize.width,
+    height: screen.getPrimaryDisplay().workAreaSize.height,
     fullscreen: false,          // Make it fullscreen
     transparent: true,         // Transparent window
     frame: false,              // No window frame (borderless)
     alwaysOnTop: true,         // Ensure it stays on top
     skipTaskbar: true,         // Don't show it in the taskbar (Windows/Linux)
-    closable: false,
     hasShadow: false,
     movable: false,
     hiddenInMissionControl: true,
@@ -60,6 +59,7 @@ const createWindow = (): void => {
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
+  console.log('window-all-closed');
   if (process.platform !== 'darwin') {
     app.quit();
   }
