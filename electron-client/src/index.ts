@@ -52,7 +52,9 @@ const createWindow = (): void => {
   mainWindow.setIgnoreMouseEvents(true, { forward: true });
 
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
-  mainWindow.webContents.openDevTools({ mode: 'detach' });
+
+  if (process.env.NODE_ENV === 'development')
+    mainWindow.webContents.openDevTools({ mode: 'detach' });
 };
 
 // Quit when all windows are closed, except on macOS. There, it's common
