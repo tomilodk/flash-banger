@@ -135,10 +135,10 @@ func handleClientConnection(w http.ResponseWriter, r *http.Request) {
 				Name string `json:"name"`
 				Text string `json:"text"`
 			}
-			decoder := json.NewDecoder(r.Body)
-			if err := decoder.Decode(&requestBody); err != nil {
-				http.Error(w, "Invalid JSON body", http.StatusBadRequest)
-				return
+
+			if err := json.Unmarshal([]byte(msg.Body), &requestBody); err != nil {
+				log.Printf("Error unmarshaling message in send-message: %v", err)
+				continue
 			}
 
 			sendFlashToClient(requestBody.Name, requestBody.Text)
