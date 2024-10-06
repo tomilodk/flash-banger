@@ -2,8 +2,19 @@ import WebSocket from 'ws';
 import { mainWindow } from '..';
 
 // Set up WebSocket (or HTTP) to listen for flash commands
+
+let ws: WebSocket | null = null;
+
+export function getWebSocket() {
+    if(!ws) {
+        addWebSocket();
+    }
+    
+    return ws;
+}
+
 export function addWebSocket() {
-    const ws = new WebSocket('wss://flash.igloo.dk/ws');  // Replace with your WebSocket server address
+    ws = new WebSocket('wss://flash.igloo.dk/ws');  // Replace with your WebSocket server address
   
     ws.on('open', () => {
       console.log('WebSocket connection established');
