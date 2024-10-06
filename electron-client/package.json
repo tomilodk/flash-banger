@@ -50,6 +50,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@hookform/resolvers": "^3.9.0",
+    "@radix-ui/react-label": "^2.1.0",
+    "@radix-ui/react-slot": "^1.1.0",
     "@types/auto-launch": "^5.0.5",
     "auto-launch": "^5.0.6",
     "bufferutil": "^4.0.8",
@@ -60,11 +63,13 @@
     "path": "^0.12.7",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-hook-form": "^7.53.0",
     "sass": "^1.79.4",
     "tailwind-merge": "^2.5.3",
     "tailwindcss-animate": "^1.0.7",
     "update-electron-app": "^3.0.0",
-    "utf-8-validate": "^5.0.10"
+    "utf-8-validate": "^5.0.10",
+    "zod": "^3.23.8"
   },
   "repository": {
     "type": "git",
