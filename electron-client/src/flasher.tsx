@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './flasher.css';
 declare global {
     interface Window {
@@ -10,22 +10,22 @@ declare global {
 
 const Flasher: React.FC = () => {
 
-    const flashOverlay = useRef(null);
-    const flashText = useRef(null);
+    const [flash, setFlash] = useState(false);
+    const [flashText, setFlashText] = useState('');
 
     useEffect(() => {
         // Listen for 'flash' event from the main process
         window.electronAPI.onFlash((event, data) => {
-            flashOverlay.current.classList.add('show');  // Show the flash
-            flashText.current.textContent = data.text;
+            setFlash(true);  // Show the flash
+            setFlashText(data.text);
             setTimeout(() => {
-                flashOverlay.current.classList.remove('show');  // Hide the flash after 1 second
+                setFlash(false);  // Hide the flash after 1 second
             }, 1000);
         });
     }, []);
     return (
-        <div id="flashOverlay" ref={flashOverlay}>
-            <p id="flashText" ref={flashText}></p>
+        <div id="flashOverlay" className={flash ? 'show' : ''}>
+            <p id="flashText">{flashText}</p>
         </div>
     );
 }
