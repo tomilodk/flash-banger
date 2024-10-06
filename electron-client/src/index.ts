@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow } from 'electron';
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
 
@@ -10,11 +10,13 @@ if (require('electron-squirrel-startup')) {
 import { addWebsocket } from './setup/websocket';
 import { addAutoUpdate } from './setup/auto-update';
 import { addAutoLaunch } from './setup/auto-launch';
+import { addBridge } from './setup/bridge';
+
+export let mainWindow: BrowserWindow;
 
 addAutoUpdate();
 addAutoLaunch();
-
-export let mainWindow: BrowserWindow;
+addBridge();
 
 const createWindow = (): void => {
   console.log({ MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY, MAIN_WINDOW_WEBPACK_ENTRY });
@@ -33,10 +35,10 @@ const createWindow = (): void => {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
     }
   });
-  // Enable click-through: allows clicking through the window
+
+  // By default, the window is not clickable
   mainWindow.setIgnoreMouseEvents(true, { forward: true });
 
-  // and load the index.html of the app.
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
   mainWindow.webContents.openDevTools({ mode: 'detach' });
 };
@@ -48,10 +50,6 @@ app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
   }
-});
-
-ipcMain.on('clickable', (event: Electron.IpcMainEvent, clickable: boolean) => {
-  mainWindow.setIgnoreMouseEvents(!clickable, { forward: true });
 });
 
 // Electron app lifecycle
