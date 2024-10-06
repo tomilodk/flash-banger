@@ -39,7 +39,6 @@ const createWindow = (): void => {
     resizable: false,
     roundedCorners: false,
     maximizable: false,
-    focusable: false,
     fullscreenable: false,
 
     webPreferences: {

@@ -2,7 +2,7 @@ import { globalShortcut } from "electron";
 import { toggleActionMenu } from "./shortcuts/toggleActionMenu";
 
 const shortcuts = {
-    'Alt+Shift+CommandOrControl+F': () => toggleActionMenu('flash'),
+    'Alt+Shift+.': () => toggleActionMenu('flash'),
 }
 
 export function addShortcuts() {

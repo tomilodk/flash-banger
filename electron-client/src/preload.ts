@@ -15,6 +15,7 @@ declare global {
             onFlash: (callback: (event: Electron.IpcRendererEvent, data: FlashData) => void) => void;
             clickable: (clickable: boolean) => void;
             onToggleActionMenu: (callback: (action: keyof typeof ACTIONS) => void) => void;
+            setName: (name: string) => void;
         }
     }
 }
@@ -33,6 +34,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
         ipcRenderer.on('toggle-action-menu', (event, action) => {
             callback(action);
         });
+    },
+    setName: (name: string) => {
+        ipcRenderer.send('set-name', name);
     }
 });
 
