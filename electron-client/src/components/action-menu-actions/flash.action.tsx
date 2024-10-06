@@ -75,6 +75,7 @@ export default function FlashAction() {
                   type="text"
                   placeholder="Search for a name..."
                   value={searchTerm}
+                  autoFocus
                   onChange={(e) => setSearchTerm(e.target.value)}
                   onKeyDown={handleKeyDown}
                   className="w-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
