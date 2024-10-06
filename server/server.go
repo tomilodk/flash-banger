@@ -15,6 +15,7 @@ import (
 type Client struct {
 	ID   string
 	Conn *websocket.Conn
+	Name string
 }
 
 var (
@@ -67,7 +68,7 @@ func handleClientConnection(w http.ResponseWriter, r *http.Request) {
 
 	// Listen for client messages (not used in this example)
 	for {
-		_, _, err := conn.ReadMessage()
+		_, message, err := conn.ReadMessage()
 		if err != nil {
 			log.Printf("Client disconnected: %s", clientID)
 			clientsMutex.Lock()
@@ -76,14 +77,44 @@ func handleClientConnection(w http.ResponseWriter, r *http.Request) {
 			conn.Close()
 			break
 		}
+
+		var msg struct {
+			Command string `json:"command"`
+			Body    string `json:"body"`
+		}
+
+		if err := json.Unmarshal(message, &msg); err != nil {
+			log.Printf("Error unmarshaling message: %v", err)
+			continue
+		}
+
+		if msg.Command == "set-name" {
+			client.Name = msg.Body
+			log.Printf("Client name set to: %s", client.Name)
+		}
 	}
 }
 
 // Handler to trigger flash on a specific client
 func triggerFlash(w http.ResponseWriter, r *http.Request) {
-	clientID := r.URL.Query().Get("id")
-	if clientID == "" {
-		http.Error(w, "Missing client ID", http.StatusBadRequest)
+	clientName := r.URL.Query().Get("name")
+	if clientName == "" {
+		http.Error(w, "Missing client name", http.StatusBadRequest)
+		return
+	}
+
+	var targetClient *Client
+	clientsMutex.Lock()
+	for _, client := range clients {
+		if client.Name == clientName {
+			targetClient = client
+			break
+		}
+	}
+	clientsMutex.Unlock()
+
+	if targetClient == nil {
+		http.Error(w, "Client not found", http.StatusNotFound)
 		return
 	}
 
@@ -103,35 +134,26 @@ func triggerFlash(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	clientsMutex.Lock()
-	client, exists := clients[clientID]
-	clientsMutex.Unlock()
-
-	if !exists {
-		http.Error(w, "Client not found", http.StatusNotFound)
-		return
-	}
-
 	// Send the flash message to the client
 	message := map[string]string{
 		"command": "flash",
 		"body":    text,
 	}
 	jsonMessage, err := json.Marshal(message)
-	
+
 	if err != nil {
 		log.Printf("Error marshaling JSON: %v", err)
 		http.Error(w, "Failed to create flash message", http.StatusInternalServerError)
 		return
 	}
-	err = client.Conn.WriteMessage(websocket.TextMessage, jsonMessage)
+	err = targetClient.Conn.WriteMessage(websocket.TextMessage, jsonMessage)
 	if err != nil {
-		log.Printf("Error sending flash to client %s: %v", clientID, err)
+		log.Printf("Error sending flash to client %s: %v", targetClient.ID, err)
 		http.Error(w, "Failed to trigger flash", http.StatusInternalServerError)
 		return
 	}
 
-	log.Printf("Flash triggered for client: %s", clientID)
+	log.Printf("Flash triggered for client: %s", targetClient.ID)
 	w.WriteHeader(http.StatusOK)
 }
 
