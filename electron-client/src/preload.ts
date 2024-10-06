@@ -3,6 +3,7 @@
 
 
 import { contextBridge, ipcRenderer } from 'electron';
+import { ACTIONS } from './components/action-menu-actions';
 
 type FlashData = {
     text: string;
@@ -13,7 +14,7 @@ declare global {
         electronAPI: {
             onFlash: (callback: (event: Electron.IpcRendererEvent, data: FlashData) => void) => void;
             clickable: (clickable: boolean) => void;
-            onToggleActionMenu: (callback: () => void) => void;
+            onToggleActionMenu: (callback: (action: keyof typeof ACTIONS) => void) => void;
         }
     }
 }
@@ -28,8 +29,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
     clickable: (clickable: boolean) => {
         ipcRenderer.send('clickable', clickable);
     },
-    onToggleActionMenu: (callback: () => void) => {
-        ipcRenderer.on('toggle-action-menu', callback);
+    onToggleActionMenu: (callback: (action: keyof typeof ACTIONS) => void) => {
+        ipcRenderer.on('toggle-action-menu', (event, action) => {
+            callback(action);
+        });
     }
 });
 

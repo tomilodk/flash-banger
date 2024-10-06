@@ -1,8 +1,9 @@
+import { ACTIONS } from '../components/action-menu-actions';
 import { createContext, useContext, useEffect, useState } from 'react';
 
 type ActionMenuContextType = {
     visible: boolean;
-    setVisible: (visible: boolean) => void | undefined;
+    action: keyof typeof ACTIONS;
 }
 
 const ActionMenuContext = createContext<ActionMenuContextType | undefined>(undefined);
@@ -18,9 +19,13 @@ export const useActionMenu = () => {
 
 export const ActionMenuProvider = ({ children }: { children: React.ReactNode }) => {
     const [visible, setVisible] = useState(false);
+    const [action, setAction] = useState<keyof typeof ACTIONS>("flash");
 
     useEffect(() => {
-        window.electronAPI.onToggleActionMenu(() => setVisible(prevVisible => !prevVisible));
+        window.electronAPI.onToggleActionMenu((action: ActionMenuContextType["action"]) => {
+            setVisible(prevVisible => !prevVisible);
+            setAction(action);
+        });
     }, []);
 
     useEffect(() => {
@@ -28,7 +33,7 @@ export const ActionMenuProvider = ({ children }: { children: React.ReactNode }) 
     }, [visible]);
 
     return (
-        <ActionMenuContext.Provider value={{ visible, setVisible }}>
+        <ActionMenuContext.Provider value={{ visible, action }}>
             {children}
         </ActionMenuContext.Provider>
     );
