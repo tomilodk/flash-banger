@@ -2,7 +2,7 @@ import { globalShortcut } from "electron";
 import { toggleActionMenu } from "./shortcuts/toggleActionMenu";
 
 const shortcuts = {
-    'Alt+Shift+F': toggleActionMenu
+    'Alt+Shift+CommandOrControl+F': toggleActionMenu
 }
 
 export function addShortcuts() {

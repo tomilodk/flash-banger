@@ -20,14 +20,11 @@ export const ActionMenuProvider = ({ children }: { children: React.ReactNode }) 
     const [visible, setVisible] = useState(false);
 
     useEffect(() => {
-        window.electronAPI.onToggleActionMenu(() => {
-            setVisible(!visible);
-        });
+        window.electronAPI.onToggleActionMenu(() => setVisible(prevVisible => !prevVisible));
     }, []);
 
     useEffect(() => {
         window.electronAPI.clickable(visible);
-        console.log('clickable event listener in renderer', visible);
     }, [visible]);
 
     return (

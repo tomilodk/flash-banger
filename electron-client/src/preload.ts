@@ -29,10 +29,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
         ipcRenderer.send('clickable', clickable);
     },
     onToggleActionMenu: (callback: () => void) => {
-        ipcRenderer.on('toggle-action-menu', () => {
-            console.log('toggle-action-menu event received in preload');
-            callback();
-        });
+        ipcRenderer.on('toggle-action-menu', callback);
     }
 });
 
