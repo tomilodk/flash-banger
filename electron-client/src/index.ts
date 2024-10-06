@@ -11,7 +11,7 @@ import { addWebSocket } from './setup/websocket';
 import { addAutoUpdate } from './setup/auto-update';
 import { addAutoLaunch } from './setup/auto-launch';
 import { addBridge } from './setup/bridge';
-import { addShortcuts } from './setup/shortcuts';
+import { addOnOpenShortcuts, addShortcuts, removeOnOpenShortcuts } from './setup/shortcuts';
 import { initialLaunchRules } from './setup/initial-launch-rules';
 
 export let mainWindow: BrowserWindow;
@@ -53,6 +53,14 @@ const createWindow = (): void => {
 
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
+  mainWindow.on("focus", () => {
+    addOnOpenShortcuts();
+  })
+
+  mainWindow.on("blur", () => {
+    removeOnOpenShortcuts();
+  })
+
   if (process.env.NODE_ENV === 'development')
     mainWindow.webContents.openDevTools({ mode: 'detach' });
 };
@@ -77,6 +85,7 @@ app.whenReady().then(() => {
   createWindow();
   addWebSocket();
   addShortcuts();
+  
   setTimeout(() => {
     initialLaunchRules();
   }, 1000);
