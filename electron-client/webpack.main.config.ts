@@ -2,6 +2,10 @@ import type { Configuration } from 'webpack';
 
 import { rules } from './webpack.rules';
 import { plugins } from './webpack.plugins';
+import path from 'path';
+import process from 'process';
+
+console.log(process.cwd());
 
 export const mainConfig: Configuration = {
   /**
@@ -16,9 +20,8 @@ export const mainConfig: Configuration = {
   plugins,
   resolve: {
     extensions: ['.js', '.ts', '.jsx', '.tsx', '.css', '.json'],
-    fallback: {
-      fs: false,
-      path: require.resolve('path-browserify'),
+    alias: {
+      '@': path.resolve(process.cwd(), 'src'),
     },
   },
 };
