@@ -15,11 +15,18 @@ declare global {
             onFlash: (callback: (event: Electron.IpcRendererEvent, data: FlashData) => void) => void;
             clickable: (clickable: boolean) => void;
             onToggleActionMenu: (callback: (action: keyof typeof ACTIONS) => void) => void;
+            onCloseActionMenu: (callback: () => void) => void;
+            onOpenActionMenu: (callback: (action: keyof typeof ACTIONS) => void) => void;
             setName: (name: string) => void;
             sendMessage: (name: string, text: string) => void;
+            closeActionMenu: () => void;
+            openActionMenu: (action: keyof typeof ACTIONS) => void;
         }
     }
 }
+
+let closeActionMenu: () => void;
+let openActionMenu: (action: keyof typeof ACTIONS) => void;
 
 contextBridge.exposeInMainWorld('electronAPI', {
     onFlash: (callback: (event: Electron.IpcRendererEvent, data: FlashData) => void) => {
@@ -35,6 +42,24 @@ contextBridge.exposeInMainWorld('electronAPI', {
         ipcRenderer.on('toggle-action-menu', (event, action) => {
             callback(action);
         });
+    },
+    onCloseActionMenu: (callback: () => void) => {
+        closeActionMenu = callback;
+        ipcRenderer.on('close-action-menu', () => {
+            closeActionMenu();
+        });
+    },
+    onOpenActionMenu: (callback: (action: keyof typeof ACTIONS) => void) => {
+        openActionMenu = callback;
+        ipcRenderer.on('open-action-menu', (event, action) => {
+            openActionMenu(action);
+        });
+    },
+    closeActionMenu: () => {
+        closeActionMenu();
+    },
+    openActionMenu: (action: keyof typeof ACTIONS) => {
+        openActionMenu(action);
     },
     setName: (name: string) => {
         ipcRenderer.send('set-name', name);

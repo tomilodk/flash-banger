@@ -43,6 +43,8 @@ export default function FlashAction() {
 
       window.electronAPI.sendMessage(name, text);
 
+      window.electronAPI.closeActionMenu();
+
       console.log(`Sending message to ${name}: ${text}`)
       setMessage("")
       setShowInput(false)

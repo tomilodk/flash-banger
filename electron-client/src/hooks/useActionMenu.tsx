@@ -26,6 +26,13 @@ export const ActionMenuProvider = ({ children }: { children: React.ReactNode }) 
             setVisible(prevVisible => !prevVisible);
             setAction(action);
         });
+        window.electronAPI.onCloseActionMenu(() => {
+            setVisible(false);
+        });
+        window.electronAPI.onOpenActionMenu((action: ActionMenuContextType["action"]) => {
+            setVisible(true);
+            setAction(action);
+        });
     }, []);
 
     useEffect(() => {
