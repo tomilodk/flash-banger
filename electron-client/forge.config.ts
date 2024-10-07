@@ -21,8 +21,8 @@ const config: ForgeConfig = {
       identityValidation: false,
       optionsForFile(filePath) {
         return {
-          entitlements: './packaging/entitlements.plist',
-          entitlementsInherit: './packaging/entitlements.plist',
+          entitlements: './packaging/entitlements.mac.plist',
+          entitlementsInherit: './packaging/entitlements.mac.plist',
         };
       },
     },
