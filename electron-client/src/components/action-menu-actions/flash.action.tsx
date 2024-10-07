@@ -60,7 +60,10 @@ export default function FlashAction() {
       setLoadingNames(true)
       window.electronAPI.getNames().then((names) => {
          console.log({ names })
-         setNames(names.split(","))
+         const namesArray = names.split(",").filter(name => name.length > 0)
+         if (namesArray.length > 0) {
+            setNames(namesArray)
+         }
       }).catch((error) => {
          console.error(error)
       }).finally(() => {
