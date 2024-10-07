@@ -4,7 +4,7 @@ export function log(message: string) {
     console.log(message);
     const logs = storage.getItem("logs") || "[]";
     const logsArray = JSON.parse(logs);
-    logsArray.push(`${new Date().toISOString()} - ${message}`);
+    logsArray.push(`${new Date().toISOString()} - ${JSON.stringify(message)}`);
     if (logsArray.length > 100) {
         logsArray.shift(); // Remove the oldest log entry
     }

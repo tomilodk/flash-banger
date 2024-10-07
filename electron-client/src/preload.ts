@@ -24,6 +24,7 @@ declare global {
             openActionMenu: (action: keyof typeof ACTIONS) => void;
             getNames: () => Promise<string>;
             getMyName: () => Promise<string>;
+            getVersion: () => Promise<string>;
         }
     }
 }
@@ -93,6 +94,19 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
             ipcRenderer.on('get-my-name-response', (event, name) => {
                 resolve(name);
+            });
+        });
+    },
+    getVersion: () => {
+        return new Promise((resolve, reject) => {
+            ipcRenderer.send('get-version');
+
+            setTimeout(() => {
+                reject('Timeout');
+            }, 10000);
+
+            ipcRenderer.on('get-version-response', (event, version) => {
+                resolve(version);
             });
         });
     },
