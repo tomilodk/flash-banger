@@ -28,7 +28,7 @@ jobs:
 
     - name: Set version
       run: |
-        npx nbgv-setversion
+        ts-node scripts/set-version.ts ${{ github.ref_name }}
 
     - name: Install ImageMagick
       run: sudo apt-get install imagemagick
