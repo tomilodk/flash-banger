@@ -15,9 +15,6 @@ import { addOnOpenShortcuts, addShortcuts, removeOnOpenShortcuts } from './setup
 import { initialLaunchRules } from './setup/initial-launch-rules';
 
 export let mainWindow: BrowserWindow;
-
-addAutoUpdate();
-addAutoLaunch();
 addBridge();
 
 const createWindow = (): void => {
@@ -86,7 +83,9 @@ app.whenReady().then(() => {
   createWindow();
   addWebSocket();
   addShortcuts();
-  
+  addAutoUpdate();
+  addAutoLaunch();
+
   setTimeout(() => {
     initialLaunchRules();
   }, 1000);
