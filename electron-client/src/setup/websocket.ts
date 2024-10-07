@@ -3,6 +3,7 @@ import { mainWindow } from '..';
 import { hasEnteredName } from './initial-launch-rules';
 import { storage } from '../lib/storage';
 import { log } from '../lib/logger';
+import { setNameSchema } from '../schemas/set-name-schema';
 
 // Set up WebSocket (or HTTP) to listen for flash commands
 
@@ -23,6 +24,13 @@ export function addWebSocket() {
       log('WebSocket connection established');
 
       if(hasEnteredName()) {
+        const result = setNameSchema.safeParse({name: storage.getItem("name")});
+        if (!result.success) {
+            log("Failed to set name");
+            storage.deleteItem("name");
+            return;
+        }
+
         ws.send(JSON.stringify({
           command: "set-name",
           body: storage.getItem("name")
