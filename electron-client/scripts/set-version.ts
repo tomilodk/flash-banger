@@ -9,3 +9,5 @@ const newVersion = process.argv[2];
 packageJson.version = newVersion;
 
 fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
+
+console.log(`Version set to ${newVersion}`);

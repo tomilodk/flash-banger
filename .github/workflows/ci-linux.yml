@@ -26,6 +26,9 @@ jobs:
     - name: Install dependencies
       run: npm install
 
+    - name: Install ts-node
+      run: npm i -g ts-node
+
     - name: Set version
       run: |
         ts-node scripts/set-version.ts ${{ github.ref_name }}
@@ -35,7 +38,6 @@ jobs:
 
     - name: Generate Iconset
       run: |
-        npm i -g ts-node
         ts-node scripts/generate-icon.ts linux
 
     - name: Package Electron App
