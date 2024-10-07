@@ -2,6 +2,7 @@ import { ipcMain } from "electron";
 import { mainWindow } from "..";
 import { getWebSocket } from "./websocket";
 import { storage } from "../lib/storage";
+import { setNameSchema } from "../schemas/set-name-schema";
 
 export function addBridge() {
     ipcMain.on('clickable', (event: Electron.IpcMainEvent, clickable: boolean) => {
@@ -9,6 +10,11 @@ export function addBridge() {
     });
 
     ipcMain.on('set-name', (event: Electron.IpcMainEvent, name: string) => {
+        const result = setNameSchema.safeParse({name});
+        if (!result.success) {
+            return;
+        }
+
         getWebSocket().send(JSON.stringify({
             command: "set-name",
             body: name

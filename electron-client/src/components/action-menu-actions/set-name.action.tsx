@@ -10,26 +10,17 @@ import {
   FormMessage,
 } from "../../shadcn/form"
 import { Input } from "../../shadcn/input"
-
-const formSchema = z.object({
-  name: z.string().min(2, {
-    message: "Name must be at least 2 characters.",
-  }).max(10, {
-    message: "Name must be at most 10 characters.",
-  }).regex(/^[a-zA-Z]+$/, {
-    message: "Name must only contain letters, and no spaces",
-  }),
-})
+import { setNameSchema } from "../../schemas/set-name-schema"
 
 export default function SetNameAction() {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof setNameSchema>>({
+    resolver: zodResolver(setNameSchema),
     defaultValues: {
       name: "",
     },
   })
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  function onSubmit(values: z.infer<typeof setNameSchema>) {
     console.log(values)
     window.electronAPI.setName(values.name)
   }
