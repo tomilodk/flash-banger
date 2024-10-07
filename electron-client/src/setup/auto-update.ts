@@ -7,6 +7,10 @@ export function addAutoUpdate() {
         autoUpdater.checkForUpdates()
     }, 60000)
 
+    autoUpdater.on('update-available', () => {
+        logger.info('Update available');
+    })
+
     autoUpdater.on('update-downloaded', () => {
         logger.info('Update downloaded, quitting and installing');
         autoUpdater.quitAndInstall()
