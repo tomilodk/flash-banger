@@ -2,11 +2,8 @@ name: Build and Publish Mac App
 
 on:
   push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+    tags:
+      - 'v*'
 
 jobs:
   build:
@@ -37,6 +34,10 @@ jobs:
 
     - name: Install dependencies
       run: npm install
+
+    - name: Set version
+      run: |
+        npx nbgv-setversion
 
     - name: Install ImageMagick
       run: brew install imagemagick

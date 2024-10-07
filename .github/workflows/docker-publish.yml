@@ -2,10 +2,8 @@ name: Docker Build and Push
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-
+    tags:
+      - 'v*'
 env:
   DOCKER_HUB_REPO: thefoggingduke/flash-banger
 
