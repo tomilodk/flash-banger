@@ -1,47 +1,23 @@
 name: Publish Release
 
 on:
-  workflow_run:
-    workflows:
-      - "Build and Publish Mac App"
-      - "Build and Publish Windows App"
-      - "Build and Publish Linux App"
-      - "Docker Build and Push"
-    types:
-      - completed
-
+    workflow_run:
+        workflows:
+            - "Build and Publish Mac App"
+        types:
+            - completed
 jobs:
-  publish-release:
-    runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+    publish-release:
+        name: "Publish Release"
+        runs-on: "ubuntu-latest"
 
-      - name: Get version from tag
-        id: get_version
-        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
-
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ steps.get_version.outputs.VERSION }}
-          release_name: Release ${{ steps.get_version.outputs.VERSION }}
-          draft: false
-          prerelease: false
-
-      - name: Update release with assets
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh release view ${{ steps.get_version.outputs.VERSION }} --json assets -q '.assets[].name' | \
-          xargs -I {} gh release upload ${{ steps.get_version.outputs.VERSION }} {}
-
-      - name: Publish release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh release edit ${{ steps.get_version.outputs.VERSION }} --draft=false
+        steps:
+            - uses: "marvinpinto/action-automatic-releases@latest"
+              with:
+                  repo_token: "${{ secrets.GITHUB_TOKEN }}"
+                  prerelease: false
+                  files: |
+                      *.zip
+                      *.dmg
+                      *.deb
+                      *.msi
