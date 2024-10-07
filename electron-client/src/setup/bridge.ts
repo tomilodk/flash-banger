@@ -5,6 +5,7 @@ import { storage } from "../lib/storage";
 import { setNameSchema } from "../schemas/set-name-schema";
 import { sendFlashSchema } from "../schemas/send-flash-schema";
 import { log } from "../lib/logger";
+import { runtimeVersion } from "../runtime-version";
 
 export function addBridge() {
     ipcMain.on('clickable', (event: Electron.IpcMainEvent, clickable: boolean) => {
@@ -52,6 +53,6 @@ export function addBridge() {
     });
 
     ipcMain.on('get-version', (event: Electron.IpcMainEvent) => {
-        event.reply('get-version-response', process.env.npm_package_version);
+        event.reply('get-version-response', runtimeVersion);
     });
 }
