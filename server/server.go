@@ -5,6 +5,7 @@ import (
 	"log"
 	"math/rand"
 	"net/http"
+	"os"
 	"strings"
 	"sync"
 	"time"
@@ -39,7 +40,7 @@ func generateClientID() string {
 	return string(b)
 }
 
-func sendFlashToClient(name string, text string) {
+func sendFlashToClient(name string, text string, from string) {
 	var targetClient *Client
 	clientsMutex.Lock()
 	for _, client := range clients {
@@ -56,10 +57,21 @@ func sendFlashToClient(name string, text string) {
 		return
 	}
 
+	body := map[string]string{
+		"text": text,
+		"from": from,
+	}
+
+	bodyJson, err := json.Marshal(body)
+	if err != nil {
+		log.Printf("Error marshaling JSON: %v", err)
+		return
+	}
+
 	// Send the flash message to the client
 	message := map[string]string{
 		"command": "flash",
-		"body":    text,
+		"body":    string(bodyJson),
 	}
 	jsonMessage, err := json.Marshal(message)
 
@@ -152,14 +164,21 @@ func handleClientConnection(w http.ResponseWriter, r *http.Request) {
 				continue
 			}
 
-			sendFlashToClient(requestBody.Name, requestBody.Text)
+			sendFlashToClient(requestBody.Name, requestBody.Text, client.Name)
 		} else if msg.Command == "get-names" {
 			var response struct {
 				Command string `json:"command"`
 				Body    string `json:"body"`
 			}
 			response.Command = "get-names-response"
-			response.Body = strings.Join(getNames(), ",")
+			names := getNames()
+			filteredNames := make([]string, 0)
+			for _, name := range names {
+				if name != client.Name {
+					filteredNames = append(filteredNames, name)
+				}
+			}
+			response.Body = strings.Join(filteredNames, ",")
 
 			jsonResponse, err := json.Marshal(response)
 			if err != nil {
@@ -172,10 +191,20 @@ func handleClientConnection(w http.ResponseWriter, r *http.Request) {
 }
 
 // Handler to trigger flash on a specific client
-func triggerFlash(w http.ResponseWriter, r *http.Request) {
-	clientName := r.URL.Query().Get("name")
-	if clientName == "" {
-		http.Error(w, "Missing client name", http.StatusBadRequest)
+func triggerFlashAll(w http.ResponseWriter, r *http.Request) {
+	auth := r.Header.Get("Authorization")
+	if auth != os.Getenv("AUTH_TOKEN") {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+
+	from := r.URL.Query().Get("from")
+	if from == "" {
+		http.Error(w, "Missing from", http.StatusBadRequest)
+		return
+	}
+	if len(from) > 10 || len(from) < 2 {
+		http.Error(w, "From should be 2-10 characters", http.StatusBadRequest)
 		return
 	}
 
@@ -195,7 +224,9 @@ func triggerFlash(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	sendFlashToClient(clientName, text)
+	for _, client := range clients {
+		sendFlashToClient(client.Name, text, from)
+	}
 
 	w.WriteHeader(http.StatusOK)
 }
@@ -204,7 +235,7 @@ func main() {
 	rand.Seed(time.Now().UnixNano())
 
 	http.HandleFunc("/ws", handleClientConnection)
-	http.HandleFunc("/flash", triggerFlash)
+	http.HandleFunc("/flash-all", triggerFlashAll)
 
 	log.Println("Server listening on :8080")
 	log.Fatal(http.ListenAndServe("0.0.0.0:8080", nil))

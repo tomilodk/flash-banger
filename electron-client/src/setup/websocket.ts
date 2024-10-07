@@ -47,7 +47,7 @@ export function addWebSocket() {
   
       // Trigger the flash in the renderer process
       if (messageObject.command === 'flash') {
-        mainWindow.webContents.send('flash', { text: messageObject.body });
+        mainWindow.webContents.send('flash', messageObject.body);
       }
 
       if (messageObject.command === 'get-names-response') {

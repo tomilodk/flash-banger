@@ -7,6 +7,7 @@ import { ACTIONS } from './components/action-menu-actions';
 
 type FlashData = {
     text: string;
+    from: string;
 }
 
 declare global {
