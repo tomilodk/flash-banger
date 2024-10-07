@@ -62,16 +62,10 @@ func sendFlashToClient(name string, text string, from string) {
 		"from": from,
 	}
 
-	bodyJson, err := json.Marshal(body)
-	if err != nil {
-		log.Printf("Error marshaling JSON: %v", err)
-		return
-	}
-
 	// Send the flash message to the client
-	message := map[string]string{
+	message := map[string]interface{}{
 		"command": "flash",
-		"body":    string(bodyJson),
+		"body":    body,
 	}
 	jsonMessage, err := json.Marshal(message)
 
