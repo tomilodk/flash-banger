@@ -6,7 +6,7 @@ const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
 
 const newVersion = process.argv[2];
 
-packageJson.version = newVersion;
+packageJson.version = newVersion.replace(/^v/, '');
 
 fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
 
