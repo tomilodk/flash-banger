@@ -1,5 +1,11 @@
-import { updateElectronApp } from 'update-electron-app';
+import { updateElectronApp, UpdateSourceType } from 'update-electron-app';
 
 export function addAutoUpdate() {
-    updateElectronApp(); // additional configuration options available
+    updateElectronApp({
+        updateSource: {
+            type: UpdateSourceType.ElectronPublicUpdateService,
+            repo: 'tomilodk/flash-banger'
+        },
+        updateInterval: '5 minutes',
+    });
 }
