@@ -19,6 +19,12 @@ const config: ForgeConfig = {
       strictVerify: false,
       identity: `Developer ID Application: mappso (${process.env.APPLE_TEAM_ID!})`,
       identityValidation: false,
+      optionsForFile(filePath) {
+        return {
+          entitlements: './packaging/entitlements.plist',
+          entitlementsInherit: './packaging/entitlements.plist',
+        };
+      },
     },
     osxNotarize: {
       appleId: process.env.APPLE_ID!,
