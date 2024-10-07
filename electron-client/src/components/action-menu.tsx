@@ -19,7 +19,7 @@ const ActionMenu: React.FC = () => {
 
                 <div className="flex justify-center items-center">
                     <span className="mt-3 text-muted-foreground text-xs left-0 pb-0 w-full text-center">ALT + SHIFT + .</span>
-                    <span className="mt-3 text-muted-foreground text-xs left-0 pb-0 w-full text-center">v{version}</span>
+                    {version && <span className="mt-3 text-muted-foreground text-xs left-0 pb-0 w-full text-center">v{version}</span>}
                 </div>
             </Card>
         )
