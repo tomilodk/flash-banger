@@ -45,6 +45,7 @@ const createWindow = (): void => {
       nodeIntegration: true,  // Allow using Node.js modules in the renderer
       contextIsolation: true,
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
+      devTools: process.env.NODE_ENV === 'development'
     }
   });
 
