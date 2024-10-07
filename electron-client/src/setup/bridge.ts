@@ -3,6 +3,7 @@ import { mainWindow } from "..";
 import { getWebSocket } from "./websocket";
 import { storage } from "../lib/storage";
 import { setNameSchema } from "../schemas/set-name-schema";
+import { sendFlashSchema } from "../schemas/send-flash-schema";
 
 export function addBridge() {
     ipcMain.on('clickable', (event: Electron.IpcMainEvent, clickable: boolean) => {
@@ -22,6 +23,11 @@ export function addBridge() {
     });
 
     ipcMain.on('send-message', (event: Electron.IpcMainEvent, name: string, text: string) => {
+        const result = sendFlashSchema.safeParse({text});
+        if (!result.success) {
+            return;
+        }
+
         getWebSocket().send(JSON.stringify({
             command: "send-message",
             body: JSON.stringify({

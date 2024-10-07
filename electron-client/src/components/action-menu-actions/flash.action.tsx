@@ -5,6 +5,7 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from "../../shadc
 import { z } from "zod"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { sendFlashSchema } from "../../schemas/send-flash-schema"
 
 export default function FlashAction() {
    const [searchTerm, setSearchTerm] = useState("")
@@ -67,18 +68,15 @@ export default function FlashAction() {
       })
    }, [])
 
-   const messageSchema = z.object({
-      text: z.string().min(1).max(100).regex(/^[a-zA-Z0-9\s]+$/, "Only letters, numbers and spaces are allowed")
-   })
 
-   const form = useForm<z.infer<typeof messageSchema>>({
-      resolver: zodResolver(messageSchema),
+   const form = useForm<z.infer<typeof sendFlashSchema>>({
+      resolver: zodResolver(sendFlashSchema),
       defaultValues: {
          text: "",
       },
    })
 
-   function onSubmit(values: z.infer<typeof messageSchema>) {
+   function onSubmit(values: z.infer<typeof sendFlashSchema>) {
       handleSendMessage(values.text)
    }
 
