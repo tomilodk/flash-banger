@@ -1,7 +1,8 @@
+import { app } from "electron";
 import fs from "fs";
 import path from "path";
 
-const storagePath = path.join(__dirname, "storage");
+const storagePath = path.join(app.getPath('userData'), "storage");
 
 export const storage = {
     getItem: (key: string) => {

@@ -4,6 +4,7 @@ import { getWebSocket } from "./websocket";
 import { storage } from "../lib/storage";
 import { setNameSchema } from "../schemas/set-name-schema";
 import { sendFlashSchema } from "../schemas/send-flash-schema";
+import { log } from "../lib/logger";
 
 export function addBridge() {
     ipcMain.on('clickable', (event: Electron.IpcMainEvent, clickable: boolean) => {
@@ -15,6 +16,8 @@ export function addBridge() {
         if (!result.success) {
             return;
         }
+
+        log(`Setting name to ${name}`);
 
         getWebSocket().send(JSON.stringify({
             command: "set-name",

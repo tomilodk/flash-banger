@@ -2,6 +2,7 @@ import WebSocket from 'ws';
 import { mainWindow } from '..';
 import { hasEnteredName } from './initial-launch-rules';
 import { storage } from '../lib/storage';
+import { log } from '../lib/logger';
 
 // Set up WebSocket (or HTTP) to listen for flash commands
 
@@ -19,7 +20,7 @@ export function addWebSocket() {
     ws = new WebSocket('wss://flash.igloo.dk/ws');  // Replace with your WebSocket server address
   
     ws.on('open', () => {
-      console.log('WebSocket connection established');
+      log('WebSocket connection established');
 
       if(hasEnteredName()) {
         ws.send(JSON.stringify({
@@ -31,9 +32,9 @@ export function addWebSocket() {
   
     ws.on('message', (data) => {
       const message = data.toString();
-      console.log('Received message:', message);
+      log('Received message: ' + message);
       if (!message.includes("command")) return;
-  
+
       const messageObject = JSON.parse(message);
   
       // Trigger the flash in the renderer process
@@ -47,11 +48,11 @@ export function addWebSocket() {
     });
   
     ws.on('close', () => {
-      console.log('WebSocket connection closed');
+      log('WebSocket connection closed');
     });
     // Function to reconnect WebSocket
     function reconnectWebSocket() {
-      console.log('Attempting to reconnect WebSocket...');
+      log('Attempting to reconnect WebSocket...');
       addWebSocket();
     }
   
@@ -64,7 +65,7 @@ export function addWebSocket() {
   
     // Handle unexpected closures and attempt to reconnect
     ws.on('close', (code, reason) => {
-      console.log(`WebSocket connection closed: ${code} ${reason}`);
+      log(`WebSocket connection closed: ${code} ${reason}`);
       clearInterval(pingInterval);
       setTimeout(reconnectWebSocket, 5000); // Attempt to reconnect after 5 seconds
     });
