@@ -12,7 +12,6 @@ jobs:
       actions: read    # Allow reading actions (optional)
     env:
       ICON_OUTPUT_DIR: packaging/icon.iconset
-      NODE_ENV: production
     runs-on: macos-latest
     defaults:
       run:

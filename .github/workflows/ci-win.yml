@@ -11,8 +11,6 @@ jobs:
     permissions:
       contents: write  # Allow writing to the repository
       actions: read    # Allow reading actions (optional)
-    env:
-      NODE_ENV: production
     defaults:
       run:
         working-directory: electron-client

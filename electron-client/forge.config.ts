@@ -14,7 +14,7 @@ const config: ForgeConfig = {
     icon: './packaging/icon',
     name: 'Flash Banger',
     executableName: 'flashbanger',
-    osxSign: process.env.NODE_ENV === 'production' ? {
+    osxSign: {
       keychain: "build.keychain",
       strictVerify: false,
       identity: `Developer ID Application: mappso (${process.env.APPLE_TEAM_ID!})`,
@@ -25,12 +25,12 @@ const config: ForgeConfig = {
           entitlementsInherit: './packaging/entitlements.mac.plist',
         };
       },
-    } : undefined,
-    osxNotarize: process.env.NODE_ENV === 'production' ? {
+    },
+    osxNotarize: {
       appleId: process.env.APPLE_ID!,
       appleIdPassword: process.env.APPLE_ID_PASSWORD!,
       teamId: process.env.APPLE_TEAM_ID!
-    } : undefined,
+    },
   },
   rebuildConfig: {},
   makers: [
