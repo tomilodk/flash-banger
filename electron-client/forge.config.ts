@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import type { ForgeConfig } from '@electron-forge/shared-types';
 import { AutoUnpackNativesPlugin } from '@electron-forge/plugin-auto-unpack-natives';
 import { WebpackPlugin } from '@electron-forge/plugin-webpack';
@@ -13,7 +14,17 @@ const config: ForgeConfig = {
     icon: './packaging/icon',
     name: 'Flash Banger',
     executableName: 'flashbanger',
-    osxSign: {}
+    osxSign: {
+      keychain: "build.keychain",
+      strictVerify: false,
+      identity: `Developer ID Application: mappso (${process.env.APPLE_TEAM_ID!})`,
+      identityValidation: false,
+    },
+    osxNotarize: {
+      appleId: process.env.APPLE_ID!,
+      appleIdPassword: process.env.APPLE_APP_SPECIFIC_PASSWORD!,
+      teamId: process.env.APPLE_TEAM_ID!
+    }
   },
   rebuildConfig: {},
   makers: [
