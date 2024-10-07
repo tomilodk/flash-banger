@@ -3,6 +3,7 @@ import { autoUpdater } from 'electron';
 
 export function addAutoUpdate() {
     setInterval(() => {
+        logger.info('Checking for updates')
         autoUpdater.checkForUpdates()
     }, 60000)
 
