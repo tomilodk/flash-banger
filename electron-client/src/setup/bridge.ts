@@ -1,6 +1,6 @@
 import { ipcMain } from "electron";
 import { mainWindow } from "..";
-import { getWebSocket } from "./websocket";
+import { getWebSocket, pingWebSocket } from "./websocket";
 import { storage } from "../lib/storage";
 import { setNameSchema } from "../schemas/set-name-schema";
 import { sendFlashSchema } from "../schemas/send-flash-schema";
@@ -54,5 +54,9 @@ export function addBridge() {
 
     ipcMain.on('get-version', (event: Electron.IpcMainEvent) => {
         event.reply('get-version-response', runtimeVersion);
+    });
+
+    ipcMain.on("ping-websocket", (event: Electron.IpcMainEvent) => {
+        pingWebSocket();
     });
 }

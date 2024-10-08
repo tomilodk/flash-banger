@@ -25,6 +25,7 @@ declare global {
             getNames: () => Promise<string>;
             getMyName: () => Promise<string>;
             getVersion: () => Promise<string>;
+            pingWebSocket: () => void;
         }
     }
 }
@@ -110,6 +111,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
             });
         });
     },
+    pingWebSocket: () => {
+        ipcRenderer.send('ping-websocket');
+    }
 });
 
 console.log('Preload script is running');

@@ -75,6 +75,15 @@ export function addWebSocket() {
     ws.on('close', (code, reason) => {
       log(`WebSocket connection closed: ${code} ${reason}`);
       clearInterval(pingInterval);
-      setTimeout(reconnectWebSocket, 5000); // Attempt to reconnect after 5 seconds
-    });
+    setTimeout(reconnectWebSocket, 5000); // Attempt to reconnect after 5 seconds
+  });
+}
+
+export function pingWebSocket() {
+  const ws = getWebSocket();
+  if (ws.readyState === WebSocket.OPEN) {
+    ws.ping();
+  } else {
+    addWebSocket();
   }
+}

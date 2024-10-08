@@ -12,6 +12,10 @@ const ActionMenu: React.FC = () => {
         window.electronAPI.getVersion().then(setVersion);
     }, []);
 
+    useEffect(() => {
+        if (visible) window.electronAPI.pingWebSocket();
+    }, [visible]);
+
     return (
         visible && (
             <Card id='action-menu' className='w-[350px] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 p-3'>
