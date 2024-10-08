@@ -14,7 +14,7 @@ const config: ForgeConfig = {
     icon: './packaging/icon',
     name: 'Flash Banger',
     executableName: 'flashbanger',
-    osxSign: {
+    osxSign: process.env.APPLE_ID_PASSWORD ? {
       keychain: "build.keychain",
       strictVerify: false,
       identity: `Developer ID Application: mappso (${process.env.APPLE_TEAM_ID!})`,
@@ -25,12 +25,12 @@ const config: ForgeConfig = {
           entitlementsInherit: './packaging/entitlements.mac.plist',
         };
       },
-    },
-    osxNotarize: {
+    } : undefined,
+    osxNotarize: process.env.APPLE_ID_PASSWORD ? {
       appleId: process.env.APPLE_ID!,
       appleIdPassword: process.env.APPLE_ID_PASSWORD!,
       teamId: process.env.APPLE_TEAM_ID!
-    },
+    } : undefined,
   },
   rebuildConfig: {},
   makers: [
@@ -40,7 +40,7 @@ const config: ForgeConfig = {
         language: 1033,
         manufacturer: 'Mappso',
         description: 'Flash Banger is a free and open-source flashbang app.',
-        icon: './packaging/icon.ico'
+        icon: './packaging/icon.ico',
       },
       platforms: ['win32']
     },
