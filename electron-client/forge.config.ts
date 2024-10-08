@@ -40,9 +40,6 @@ const config: ForgeConfig = {
         language: 1033,
         manufacturer: 'Mappso',
         description: 'Flash Banger is a free and open-source flashbang app.',
-        shortcutFolderName: 'Flash Banger',
-        shortcutName: 'Flash Banger',
-        shortcutDescription: 'Flash Banger Application',
         icon: './packaging/icon.ico'
       },
       platforms: ['win32']
