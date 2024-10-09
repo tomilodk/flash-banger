@@ -26,6 +26,7 @@ declare global {
             getRawClients: () => Promise<string>;
             getMyName: () => Promise<string>;
             getVersion: () => Promise<string>;
+            getPlatform: () => Promise<Platform>;
             pingWebSocket: () => void;
         }
     }
@@ -112,6 +113,19 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
             ipcRenderer.on('get-version-response', (event, version) => {
                 resolve(version);
+            });
+        });
+    },
+    getPlatform: () => {
+        return new Promise((resolve, reject) => {
+            ipcRenderer.send('get-platform');
+
+            setTimeout(() => {
+                reject('Timeout');
+            }, 10000);
+
+            ipcRenderer.on('get-platform-response', (event, platform) => {
+                resolve(platform);
             });
         });
     },

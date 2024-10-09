@@ -52,6 +52,10 @@ export function addBridge() {
         event.reply('get-my-name-response', storage.getItem("name"))
     });
 
+    ipcMain.on('get-platform', (event: Electron.IpcMainEvent) => {
+        event.reply('get-platform-response', process.platform);
+    });
+
     ipcMain.on('get-version', (event: Electron.IpcMainEvent) => {
         event.reply('get-version-response', runtimeVersion);
     });

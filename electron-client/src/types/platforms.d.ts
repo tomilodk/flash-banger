@@ -1,0 +1,1 @@
+type Platform = typeof process.platform;
