@@ -21,7 +21,7 @@ const Flasher: React.FC = () => {
             setFrom(data.from);
 
             const wordsPerSecond = WORDS_PER_MINUTE / 60;
-            const readingTime = data.text.split(" ").length / wordsPerSecond * 1000;
+            const readingTime = data.text.trim().split(" ").length / wordsPerSecond * 1000;
 
             setTimeout(() => {
                 setFlash(false);  // Hide the flash after 1 second
