@@ -20,13 +20,13 @@ export function addShortcuts() {
 
 export function addOnOpenShortcuts() {
     for (const [shortcut, callback] of Object.entries(onOpenShortcuts)) {
-        registerOnOpenShortcut(shortcut, callback);
+        registerShortcut(shortcut, callback);
     }
 }
 
 export function removeOnOpenShortcuts() {
     for (const [shortcut] of Object.entries(onOpenShortcuts)) {
-        unregisterOnOpenShortcut(shortcut);
+        unregisterShortcut(shortcut);
     }
 }
 
@@ -34,10 +34,6 @@ function registerShortcut(shortcut: string, callback: () => void) {
     globalShortcut.register(shortcut, callback);
 }
 
-function registerOnOpenShortcut(shortcut: string, callback: () => void) {
-    globalShortcut.register(shortcut, callback);
-}
-
-function unregisterOnOpenShortcut(shortcut: string) {
+function unregisterShortcut(shortcut: string) {
     globalShortcut.unregister(shortcut);
 }
