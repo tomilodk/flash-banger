@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"math/rand"
 	"net/http"
@@ -10,14 +11,17 @@ import (
 	"sync"
 	"time"
 
+	"server/streaks"
+
 	"github.com/gorilla/websocket"
 )
 
 // Struct to represent a client connection
 type Client struct {
-	ID   string
-	Conn *websocket.Conn
-	Name string
+	ID      string
+	Conn    *websocket.Conn
+	Name    string
+	Version string
 }
 
 var (
@@ -29,6 +33,8 @@ var (
 		},
 	}
 )
+
+var streakService *streaks.StreakService
 
 // Generate a unique client ID
 func generateClientID() string {
@@ -79,17 +85,38 @@ func sendFlashToClient(name string, text string, from string) {
 		return
 	}
 
+	err = streakService.UpdateStreak(from, targetClient.Name)
+	if err != nil {
+		log.Printf("Error updating streak for client %s: %v", targetClient.ID, err)
+		return
+	}
+
 	log.Printf("Flash triggered for client: %s, clientName: %s, text: %s", targetClient.ID, targetClient.Name, text)
 }
 
-func getNames() []string {
+func getClientObjects(thisClientName string) []string {
 	clientsMutex.Lock()
 	defer clientsMutex.Unlock()
-	names := make([]string, 0, len(clients))
+
+	filteredClients := make([]*Client, 0)
 	for _, client := range clients {
-		names = append(names, client.Name)
+		if client.Name != thisClientName {
+			filteredClients = append(filteredClients, client)
+		}
 	}
-	return names
+
+	otherClients := make([]string, 0, len(filteredClients))
+	for _, client := range filteredClients {
+		streak, err := streakService.GetStreak(client.Name, thisClientName)
+		if err != nil {
+			log.Printf("Error getting streak for client %s: %v", client.Name, err)
+			continue
+		}
+		lastMessageTime, _ := time.Parse(time.RFC3339, streak.LastMessageSentUtc)
+		timeSinceLastMessage := time.Now().UTC().Sub(lastMessageTime).Seconds()
+		otherClients = append(otherClients, fmt.Sprintf("%s|%s|%d|%.0f", client.Name, client.Version, streak.Streak, timeSinceLastMessage))
+	}
+	return otherClients
 }
 
 // WebSocket handler for client connections
@@ -159,20 +186,19 @@ func handleClientConnection(w http.ResponseWriter, r *http.Request) {
 			}
 
 			sendFlashToClient(requestBody.Name, requestBody.Text, client.Name)
+		} else if msg.Command == "set-version" {
+			client.Version = msg.Body
+			log.Printf("Client version set to: %s", client.Version)
 		} else if msg.Command == "get-names" {
 			var response struct {
 				Command string `json:"command"`
 				Body    string `json:"body"`
 			}
 			response.Command = "get-names-response"
-			names := getNames()
-			filteredNames := make([]string, 0)
-			for _, name := range names {
-				if name != client.Name {
-					filteredNames = append(filteredNames, name)
-				}
-			}
-			response.Body = strings.Join(filteredNames, ",")
+			clientObjectsRaw := getClientObjects(client.Name)
+			clientObjects := strings.Join(clientObjectsRaw, ",")
+
+			response.Body = clientObjects
 
 			jsonResponse, err := json.Marshal(response)
 			if err != nil {
@@ -226,7 +252,7 @@ func triggerFlashAll(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	rand.Seed(time.Now().UnixNano())
+	streakService = streaks.NewStreakService("streaks")
 
 	http.HandleFunc("/ws", handleClientConnection)
 	http.HandleFunc("/flash-all", triggerFlashAll)
