@@ -11,10 +11,14 @@ const Flasher: React.FC = () => {
     const [flashText, setFlashText] = useState('');
     const [from, setFrom] = useState('');
 
+    function flashEnd() {
+        setFlash(false);
+    }
+
     useEffect(() => {
         // Listen for 'flash' event from the main process
         window.electronAPI.onFlash((event, data) => {
-            console.log("flash", data)
+
             setFlash(true);  // Show the flash
             setFlashText(data.text);
             setFrom(data.from);
@@ -23,9 +27,12 @@ const Flasher: React.FC = () => {
             const readingTime = data.text.split(" ").length / wordsPerSecond * 1000;
 
             setTimeout(() => {
-                setFlash(false);  // Hide the flash after 1 second
+                flashEnd();
+                window.electronAPI.flashEnd();
             }, Math.max(readingTime, MINIMUM_FLASH_DURATION));
         });
+
+        window.electronAPI.onFlashForceEnd(flashEnd);
     }, []);
     return (
         <div id="flashOverlay" className={flash ? 'show' : ''}>

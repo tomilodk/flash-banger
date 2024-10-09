@@ -2,9 +2,10 @@
 // https://www.electronjs.org/docs/latest/tutorial/process-model#preload-scripts
 
 
-import { contextBridge, ipcRenderer } from 'electron';
+import { contextBridge, ipcMain, ipcRenderer } from 'electron';
 import { ACTIONS } from './components/action-menu-actions';
 import { sendFlashSchema } from './schemas/send-flash-schema';
+import { addOnFlashShortcuts, removeOnFlashShortcuts } from './setup/shortcuts';
 
 type FlashData = {
     text: string;
@@ -15,6 +16,8 @@ declare global {
     interface Window {
         electronAPI: {
             onFlash: (callback: (event: Electron.IpcRendererEvent, data: FlashData) => void) => void;
+            onFlashForceEnd: (callback: () => void) => void;
+            flashEnd: () => void;
             clickable: (clickable: boolean) => void;
             onToggleActionMenu: (callback: (action: keyof typeof ACTIONS) => void) => void;
             onCloseActionMenu: (callback: () => void) => void;
@@ -38,11 +41,19 @@ contextBridge.exposeInMainWorld('electronAPI', {
     onFlash: (callback: (event: Electron.IpcRendererEvent, data: FlashData) => void) => {
         console.log('Registering flash event listener in preload');
         ipcRenderer.on('flash', (event, data) => {
-            const validation = sendFlashSchema.safeParse({ text: data.text });
+            if (!sendFlashSchema.safeParse({ text: data.text }).success) return;
 
-            if (validation.success) 
-                callback(event, data);
+            callback(event, data);
         });
+           
+    },
+    onFlashForceEnd: (callback: () => void) => {
+        ipcRenderer.on('flash-force-end', () => {
+            callback();
+        });
+    },
+    flashEnd: () => {
+        ipcRenderer.send('flash-end');
     },
     clickable: (clickable: boolean) => {
         ipcRenderer.send('clickable', clickable);

@@ -1,4 +1,4 @@
-import { ipcMain } from "electron";
+import { ipcMain, ipcRenderer } from "electron";
 import { mainWindow } from "..";
 import { getWebSocket, pingWebSocket } from "./websocket";
 import { storage } from "../lib/storage";
@@ -6,6 +6,7 @@ import { setNameSchema } from "../schemas/set-name-schema";
 import { sendFlashSchema } from "../schemas/send-flash-schema";
 import { log } from "../lib/logger";
 import { runtimeVersion } from "../runtime-version";
+import { addOnFlashShortcuts, removeOnFlashShortcuts } from "./shortcuts";
 
 export function addBridge() {
     ipcMain.on('clickable', (event: Electron.IpcMainEvent, clickable: boolean) => {
@@ -13,7 +14,7 @@ export function addBridge() {
     });
 
     ipcMain.on('set-name', (event: Electron.IpcMainEvent, name: string) => {
-        const result = setNameSchema.safeParse({name});
+        const result = setNameSchema.safeParse({ name });
         if (!result.success) {
             return;
         }
@@ -27,7 +28,7 @@ export function addBridge() {
     });
 
     ipcMain.on('send-message', (event: Electron.IpcMainEvent, name: string, text: string) => {
-        const result = sendFlashSchema.safeParse({text});
+        const result = sendFlashSchema.safeParse({ text });
         if (!result.success) {
             return;
         }
@@ -58,5 +59,13 @@ export function addBridge() {
 
     ipcMain.on("ping-websocket", (event: Electron.IpcMainEvent) => {
         pingWebSocket();
+    });
+
+    ipcMain.on('flash', () => {
+        addOnFlashShortcuts();
+    });
+
+    ipcMain.on('flash-end', () => {
+        removeOnFlashShortcuts();
     });
 }
