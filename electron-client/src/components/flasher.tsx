@@ -5,7 +5,8 @@ import { Badge } from '../shadcn/badge';
 
 const Flasher: React.FC = () => {
     const WORDS_PER_MINUTE = 150;
-    const MINIMUM_FLASH_DURATION = 1000;
+    const MINIMUM_FLASH_DURATION = 2000;
+    const MAXIMUM_FLASH_DURATION = 8500;
 
     const [flash, setFlash] = useState(false);
     const [flashText, setFlashText] = useState('');
@@ -24,7 +25,7 @@ const Flasher: React.FC = () => {
 
             setTimeout(() => {
                 setFlash(false);  // Hide the flash after 1 second
-            }, Math.max(readingTime, MINIMUM_FLASH_DURATION));
+            }, Math.min(Math.max(readingTime, MINIMUM_FLASH_DURATION), MAXIMUM_FLASH_DURATION));
         });
     }, []);
     return (
