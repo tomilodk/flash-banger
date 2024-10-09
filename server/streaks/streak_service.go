@@ -25,10 +25,12 @@ type StreakService struct {
 }
 
 func NewStreakService(baseDir string) *StreakService {
-	if err := os.MkdirAll(baseDir, 0755); err != nil {
+	dataDir := filepath.Join("data", baseDir)
+	if err := os.MkdirAll(dataDir, 0755); err != nil {
 		panic(fmt.Sprintf("Failed to create streaks directory: %v", err))
 	}
-	return &StreakService{baseDir: baseDir}
+
+	return &StreakService{baseDir: dataDir}
 }
 
 func (s *StreakService) getClientFilePath(client string) string {
