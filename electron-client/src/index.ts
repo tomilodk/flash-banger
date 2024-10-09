@@ -37,6 +37,7 @@ const createWindow = (): void => {
     roundedCorners: false,
     maximizable: false,
     fullscreenable: false,
+    closable: false,
 
     webPreferences: {
       nodeIntegration: true,  // Allow using Node.js modules in the renderer
