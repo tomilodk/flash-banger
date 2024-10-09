@@ -6,50 +6,58 @@ import { z } from "zod"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { sendFlashSchema } from "../../schemas/send-flash-schema"
+import { parseClients } from "../../lib/client-parser"
 
 export default function FlashAction() {
    const [searchTerm, setSearchTerm] = useState("")
    const [selectedIndex, setSelectedIndex] = useState(0)
    const [showInput, setShowInput] = useState(false)
-   const [names, setNames] = useState<string[] | null>(null)
+   const [clients, setClients] = useState<Client[] | null>(null)
    const [loadingNames, setLoadingNames] = useState(false)
    const [yourName, setYourName] = useState("")
+   const [holdShift, setHoldShift] = useState(false)
 
-   const filteredNames = useMemo(() => {
-      return names?.filter(name => name !== yourName).filter((name) => name.toLowerCase().includes(searchTerm.toLowerCase())) || []
-   }, [searchTerm, names, yourName])
+   const filteredClients = useMemo(() => {
+      return clients?.filter(client => client.name !== yourName).filter((client) => client.name.toLowerCase().includes(searchTerm.toLowerCase())) || []
+   }, [searchTerm, clients, yourName])
 
    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.key === "ArrowUp") {
-         setSelectedIndex((prevIndex) => (prevIndex === 0 ? filteredNames.length - 1 : prevIndex - 1))
+         setSelectedIndex((prevIndex) => (prevIndex === 0 ? filteredClients.length - 1 : prevIndex - 1))
       } else if (e.key === "ArrowDown") {
-         setSelectedIndex((prevIndex) => (prevIndex === filteredNames.length - 1 ? 0 : prevIndex + 1))
+         setSelectedIndex((prevIndex) => (prevIndex === filteredClients.length - 1 ? 0 : prevIndex + 1))
       } else if (e.key === "Enter") {
-         if (!filteredNames[selectedIndex]) {
+         if (!filteredClients[selectedIndex]) {
             console.log("No name selected");
             return
          }
 
          setShowInput(true)
          setSearchTerm("")
+      } else if (e.key === "Shift") {
+         setHoldShift(true)
       }
    }
+
+   const handleKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === "Shift") {
+         setHoldShift(false)
+      }
+   }
+
    const handleNameClick = (index: number) => {
-
-
       setSelectedIndex(index)
       setShowInput(true)
       setSearchTerm("")
    }
    const handleSendMessage = (text: string) => {
+      const client = filteredClients[selectedIndex];
 
-      const name = filteredNames[selectedIndex];
-
-      window.electronAPI.sendMessage(name, text);
+      window.electronAPI.sendMessage(client.name, text);
 
       window.electronAPI.closeActionMenu();
 
-      console.log(`Sending message to ${name}: ${text}`)
+      console.log(`Sending message to ${client.name}: ${text}`)
       setShowInput(false)
    }
 
@@ -58,11 +66,11 @@ export default function FlashAction() {
          setYourName(name)
       })
       setLoadingNames(true)
-      window.electronAPI.getNames().then((names) => {
-         console.log({ names })
-         const namesArray = names.split(",").filter(name => name.length > 0)
-         if (namesArray.length > 0) {
-            setNames(namesArray)
+      window.electronAPI.getNames().then((rawClients) => {
+         const clients = parseClients(rawClients)
+
+         if (clients.length > 0) {
+            setClients(clients)
          }
       }).catch((error) => {
          console.error(error)
@@ -94,6 +102,7 @@ export default function FlashAction() {
                   autoFocus
                   onChange={(e) => setSearchTerm(e.target.value)}
                   onKeyDown={handleKeyDown}
+                  onKeyUp={handleKeyUp}
                   className="w-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
                />
                {
@@ -101,15 +110,19 @@ export default function FlashAction() {
                      <div>Loading names...</div>
                   )
                }
-               {filteredNames.length > 0 && !showInput && (
+               {filteredClients.length > 0 && !showInput && (
                   <ul className="relative z-10 w-full mt-2 bg-white shadow-lg rounded-lg">
-                     {filteredNames.map((name, index) => (
+                     {filteredClients.map((client, index) => (
                         <li
-                           key={name}
-                           className={`px-4 py-2 cursor-pointer hover:bg-muted ${index === selectedIndex ? "bg-muted" : ""} ${index === 0 ? "rounded-t-lg" : ""} ${index === filteredNames.length - 1 ? "rounded-b-lg" : ""}`}
+                           key={client.name}
+                           className={`px-4 py-2 cursor-pointer justify-between flex flex-row items-center hover:bg-muted ${index === selectedIndex ? "bg-muted" : ""} ${index === 0 ? "rounded-t-lg" : ""} ${index === filteredClients.length - 1 ? "rounded-b-lg" : ""}`}
                            onClick={() => handleNameClick(index)}
                         >
-                           {name}
+                           <p>{client.name}</p>
+
+                           {holdShift
+                              ? <p>v{client.version}</p>
+                              : (!!client.streak && <p className="text-xs">{client.timeSinceLastMessageInSeconds < 60 * 60 * 12 ? "🔥" : "⏳"} {client.streak}</p>)}
                         </li>
                      ))}
                   </ul>
@@ -132,7 +145,7 @@ export default function FlashAction() {
                               <FormControl>
                                  <Input
                                     type="text"
-                                    placeholder={`Message ${filteredNames[selectedIndex]}`}
+                                    placeholder={`Message ${filteredClients[selectedIndex]}`}
                                     value={field.value}
                                     autoFocus
                                     onChange={(e) => field.onChange(e.target.value)}
