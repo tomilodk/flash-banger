@@ -5,6 +5,7 @@ import { storage } from '../lib/storage';
 import { log } from '../lib/logger';
 import { setNameSchema } from '../schemas/set-name-schema';
 import { runtimeVersion } from '../runtime-version';
+import { app } from 'electron';
 
 // Set up WebSocket (or HTTP) to listen for flash commands
 
@@ -47,6 +48,11 @@ export function addWebSocket() {
   ws.on('message', (data) => {
     const message = data.toString();
     log('Received message: ' + message);
+    if (message.includes("name-taken")) {
+      app.quit();
+      return;
+    }
+
     if (!message.includes("command")) return;
 
     const messageObject = JSON.parse(message);

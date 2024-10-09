@@ -173,6 +173,18 @@ func handleClientConnection(w http.ResponseWriter, r *http.Request) {
 
 		if msg.Command == "set-name" {
 			client.Name = msg.Body
+
+			// if name already exists, disconnect
+			clientsMutex.Lock()
+			if _, ok := clients[client.Name]; ok {
+				log.Printf("Client name already exists: %s", client.Name)
+				conn.WriteMessage(websocket.TextMessage, []byte("name-taken"))
+
+				conn.Close()
+				break
+			}
+			clientsMutex.Unlock()
+
 			log.Printf("Client name set to: %s", client.Name)
 		} else if msg.Command == "send-message" {
 			var requestBody struct {
