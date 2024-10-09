@@ -4,6 +4,7 @@
 
 import { contextBridge, ipcRenderer } from 'electron';
 import { ACTIONS } from './components/action-menu-actions';
+import { sendFlashSchema } from './schemas/send-flash-schema';
 
 type FlashData = {
     text: string;
@@ -37,7 +38,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
     onFlash: (callback: (event: Electron.IpcRendererEvent, data: FlashData) => void) => {
         console.log('Registering flash event listener in preload');
         ipcRenderer.on('flash', (event, data) => {
-            callback(event, data);
+            const validation = sendFlashSchema.safeParse({ text: data.text });
+
+            if (validation.success) 
+                callback(event, data);
         });
     },
     clickable: (clickable: boolean) => {
