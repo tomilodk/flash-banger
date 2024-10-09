@@ -4,6 +4,7 @@ import { hasEnteredName } from './initial-launch-rules';
 import { storage } from '../lib/storage';
 import { log } from '../lib/logger';
 import { setNameSchema } from '../schemas/set-name-schema';
+import { runtimeVersion } from '../runtime-version';
 
 // Set up WebSocket (or HTTP) to listen for flash commands
 
@@ -34,6 +35,11 @@ export function addWebSocket() {
       ws.send(JSON.stringify({
         command: "set-name",
         body: storage.getItem("name")
+      }));
+
+      ws.send(JSON.stringify({
+        command: "set-version",
+        body: runtimeVersion
       }));
     }
   });
