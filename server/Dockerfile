@@ -4,6 +4,8 @@ FROM golang:1.17-alpine
 # Set the working directory inside the container
 WORKDIR /app
 
+VOLUME /app/data
+
 ENV AUTH_TOKEN=1234567890
 
 # Copy the Go module files
