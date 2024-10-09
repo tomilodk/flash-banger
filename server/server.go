@@ -119,6 +119,17 @@ func getClientObjects(thisClientName string) []string {
 	return otherClients
 }
 
+func getNames() []string {
+	clientsMutex.Lock()
+	defer clientsMutex.Unlock()
+
+	names := make([]string, 0, len(clients))
+	for _, client := range clients {
+		names = append(names, client.Name)
+	}
+	return names
+}
+
 // WebSocket handler for client connections
 func handleClientConnection(w http.ResponseWriter, r *http.Request) {
 	conn, err := upgrader.Upgrade(w, r, nil)
@@ -201,13 +212,30 @@ func handleClientConnection(w http.ResponseWriter, r *http.Request) {
 		} else if msg.Command == "set-version" {
 			client.Version = msg.Body
 			log.Printf("Client version set to: %s", client.Version)
+		} else if msg.Command == "get-raw-clients" {
+			var response struct {
+				Command string `json:"command"`
+				Body    string `json:"body"`
+			}
+			response.Command = "get-raw-clients-response"
+			clientObjectsRaw := getClientObjects(client.Name)
+			clientObjects := strings.Join(clientObjectsRaw, ",")
+
+			response.Body = clientObjects
+
+			jsonResponse, err := json.Marshal(response)
+			if err != nil {
+				log.Printf("Error marshaling JSON: %v", err)
+				continue
+			}
+			conn.WriteMessage(websocket.TextMessage, jsonResponse)
 		} else if msg.Command == "get-names" {
 			var response struct {
 				Command string `json:"command"`
 				Body    string `json:"body"`
 			}
 			response.Command = "get-names-response"
-			clientObjectsRaw := getClientObjects(client.Name)
+			clientObjectsRaw := getNames()
 			clientObjects := strings.Join(clientObjectsRaw, ",")
 
 			response.Body = clientObjects

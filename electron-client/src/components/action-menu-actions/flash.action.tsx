@@ -66,7 +66,7 @@ export default function FlashAction() {
          setYourName(name)
       })
       setLoadingNames(true)
-      window.electronAPI.getNames().then((rawClients) => {
+      window.electronAPI.getRawClients().then((rawClients) => {
          const clients = parseClients(rawClients)
 
          if (clients.length > 0) {

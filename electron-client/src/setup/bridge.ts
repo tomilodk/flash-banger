@@ -41,9 +41,9 @@ export function addBridge() {
         }));
     });
 
-    ipcMain.on('get-names', (event: Electron.IpcMainEvent) => {
+    ipcMain.on('get-raw-clients', (event: Electron.IpcMainEvent) => {
         getWebSocket().send(JSON.stringify({
-            command: "get-names",
+            command: "get-raw-clients",
             body: ""
         }));
     });

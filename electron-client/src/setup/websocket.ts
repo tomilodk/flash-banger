@@ -62,8 +62,8 @@ export function addWebSocket() {
       mainWindow.webContents.send('flash', messageObject.body);
     }
 
-    if (messageObject.command === 'get-names-response') {
-      mainWindow.webContents.send('get-names-response', messageObject.body);
+    if (messageObject.command === 'get-raw-clients-response') {
+      mainWindow.webContents.send('get-raw-clients-response', messageObject.body);
     }
   });
 

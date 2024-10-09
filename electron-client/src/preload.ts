@@ -23,7 +23,7 @@ declare global {
             sendMessage: (name: string, text: string) => void;
             closeActionMenu: () => void;
             openActionMenu: (action: keyof typeof ACTIONS) => void;
-            getNames: () => Promise<string>;
+            getRawClients: () => Promise<string>;
             getMyName: () => Promise<string>;
             getVersion: () => Promise<string>;
             pingWebSocket: () => void;
@@ -76,15 +76,15 @@ contextBridge.exposeInMainWorld('electronAPI', {
     sendMessage: (name: string, text: string) => {
         ipcRenderer.send('send-message', name, text);
     },
-    getNames: () => {
+    getRawClients: () => {
         return new Promise((resolve, reject) => {
-            ipcRenderer.send('get-names');
+            ipcRenderer.send('get-raw-clients');
 
             setTimeout(() => {
                 reject('Timeout');
             }, 10000);
 
-            ipcRenderer.on('get-names-response', (event, names) => {
+            ipcRenderer.on('get-raw-clients-response', (event, names) => {
                 resolve(names);
             });
         });
