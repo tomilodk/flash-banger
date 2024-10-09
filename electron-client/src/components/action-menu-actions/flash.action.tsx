@@ -145,7 +145,7 @@ export default function FlashAction() {
                               <FormControl>
                                  <Input
                                     type="text"
-                                    placeholder={`Message ${filteredClients[selectedIndex]}`}
+                                    placeholder={`Message ${filteredClients[selectedIndex].name}`}
                                     value={field.value}
                                     autoFocus
                                     onChange={(e) => field.onChange(e.target.value)}
