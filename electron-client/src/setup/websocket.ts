@@ -45,6 +45,14 @@ export function addWebSocket() {
     }
   });
 
+  ws.on('error', (error) => {
+    log('WebSocket error: ' + error);
+    //If the error is a connection error, we should attempt to reconnect
+    if (error.message === 'WebSocket was closed before the connection was established') {
+      setTimeout(reconnectWebSocket, 10000);
+    }
+  });
+
   ws.on('message', (data) => {
     const message = data.toString();
     log('Received message: ' + message);
