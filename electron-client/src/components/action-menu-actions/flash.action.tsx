@@ -8,6 +8,8 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { sendFlashSchema } from "../../schemas/send-flash-schema"
 import { parseClients } from "../../lib/client-parser"
 import { useFilteredClients } from "./filtered-clients"
+import { useLocalStorage } from "usehooks-ts"
+import { LocalStorageKeys } from "../../types/local-storage-keys.enum"
 
 export default function FlashAction() {
    const [searchTerm, setSearchTerm] = useState("")
@@ -19,6 +21,8 @@ export default function FlashAction() {
    const [holdShift, setHoldShift] = useState(false)
 
    const filteredClients = useFilteredClients(clients, yourName, searchTerm);
+   const [flash] = useLocalStorage(LocalStorageKeys.FLASH, false);
+   const [lastFlashFrom] = useLocalStorage(LocalStorageKeys.LAST_FLASH_FROM, "");
 
    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.key === "ArrowUp") {
@@ -77,6 +81,13 @@ export default function FlashAction() {
          setLoadingNames(false)
       })
    }, [])
+
+   useEffect(() => {
+      if (flash && lastFlashFrom) {
+         setSelectedIndex(filteredClients.findIndex((client) => client.name === lastFlashFrom))
+         setShowInput(true)
+      }
+   }, [filteredClients, flash])
 
 
    const form = useForm<z.infer<typeof sendFlashSchema>>({

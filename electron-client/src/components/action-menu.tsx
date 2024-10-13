@@ -9,11 +9,9 @@ const ActionMenu: React.FC = () => {
     const { visible, action } = useActionMenu();
 
     const [version, setVersion] = useState<string | null>(null);
-    const [platform, setPlatform] = useState<Platform | null>(null);
 
     useEffect(() => {
         window.electronAPI.getVersion().then(setVersion);
-        window.electronAPI.getPlatform().then(setPlatform);
     }, []);
 
     useEffect(() => {
@@ -26,7 +24,7 @@ const ActionMenu: React.FC = () => {
                 {React.createElement(ACTIONS[action])}
 
                 <div className="flex justify-center items-center mt-2">
-                    <Shortcut platform={platform} />
+                    <Shortcut />
                     {version && <Version version={version} />}
                 </div>
             </Card>

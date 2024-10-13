@@ -3,6 +3,7 @@ import './flasher.scss';
 import { Badge } from '../shadcn/badge';
 import { LocalStorageKeys } from '../types/local-storage-keys.enum';
 import { useLocalStorage } from 'usehooks-ts';
+import Shortcut from './shortcut';
 
 
 const Flasher: React.FC = () => {
@@ -10,7 +11,7 @@ const Flasher: React.FC = () => {
     const MINIMUM_FLASH_DURATION = 2000;
     const MAXIMUM_FLASH_DURATION = 8500;
 
-    const [flash, setFlash] = useState(false);
+    const [flash, setFlash] = useLocalStorage(LocalStorageKeys.FLASH, false);
     const [flashText, setFlashText] = useState('');
     const [from, setFrom] = useState('');
 
@@ -43,6 +44,10 @@ const Flasher: React.FC = () => {
         <div id="flashOverlay" className={flash ? 'show' : ''}>
             {from && <Badge variant="default" className="absolute top-10 left-10">{from}</Badge>}
             <p id="flashText">{flashText}</p>
+            <div className="absolute bottom-10 left-0 right-0 flex flex-col justify-center items-center">
+                <p className="text-center text-sm text-muted-foreground mb-2">Reflash</p>
+                <Shortcut />
+            </div>
         </div>
     );
 }
