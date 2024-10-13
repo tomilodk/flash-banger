@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { sendFlashSchema } from "../../schemas/send-flash-schema"
 import { parseClients } from "../../lib/client-parser"
+import { useFilteredClients } from "./filtered-clients"
 
 export default function FlashAction() {
    const [searchTerm, setSearchTerm] = useState("")
@@ -17,9 +18,7 @@ export default function FlashAction() {
    const [yourName, setYourName] = useState("")
    const [holdShift, setHoldShift] = useState(false)
 
-   const filteredClients = useMemo(() => {
-      return clients?.filter(client => client.name !== yourName).filter((client) => client.name.toLowerCase().includes(searchTerm.toLowerCase())) || []
-   }, [searchTerm, clients, yourName])
+   const filteredClients = useFilteredClients(clients, yourName, searchTerm);
 
    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.key === "ArrowUp") {
